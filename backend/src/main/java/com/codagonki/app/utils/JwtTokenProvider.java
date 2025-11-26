@@ -78,14 +78,21 @@ public class JwtTokenProvider {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Некорректный токен");
         }
     }
-    
+        
     public boolean validateRefreshToken(String token) {
         try {
-            Jwts.parserBuilder()
+            Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getRefreshTokenSigningKey())
                 .build()
-                .parseClaimsJws(token);
-            return true;
+                .parseClaimsJws(token)
+                .getBody();
+            
+            String tokenType = claims.get("type", String.class);
+            if (!"refresh".equals(tokenType)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Неверный тип токена");
+            }
+            
+            return true;  
         } catch (ExpiredJwtException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Токен просрочен");
         } catch (MalformedJwtException e) {
@@ -106,4 +113,16 @@ public class JwtTokenProvider {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Некорректный токен");
         }
     }
+
+    public Claims getRefreshTokenClaims(String token) {
+        try {
+            return Jwts.parserBuilder()
+                .setSigningKey(getRefreshTokenSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Некорректный refresh token");
+        }
+}
 }
