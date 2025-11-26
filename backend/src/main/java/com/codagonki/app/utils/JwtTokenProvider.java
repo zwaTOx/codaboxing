@@ -112,5 +112,17 @@ public class JwtTokenProvider {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Некорректный токен");
         }
+    }
+
+    public Claims getRefreshTokenClaims(String token) {
+        try {
+            return Jwts.parserBuilder()
+                .setSigningKey(getRefreshTokenSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Некорректный refresh token");
+        }
 }
 }
