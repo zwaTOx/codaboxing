@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL:jdbc:postgresql://database:5432/CodaGonki}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres123}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  access-token-secret: "your-super-secure-access-token-secret-key-minimum-32-chars"
+  refresh-token-secret: "your-different-super-secure-refresh-token-secret-key"
+  access-token-expiration: 900000      # 15 минут в миллисекундах
+  refresh-token-expiration: 2592000000 # 30 дней в миллисекундах
