@@ -1,7 +1,7 @@
 <template>
     <header class="headerWrapper">
         <div class="header">
-            <div class="header__logo">
+            <div class="header__logo" @click="toMainPage">
                 <div class="header__logo--title" :class="{nomode: !mode}">
                     {{ mode === '' ? 'Codegonks' : `CODE: ` }}
                 </div>
@@ -19,6 +19,9 @@
 </template>
 
 <script>
+import router from '@/router';
+import { authStore } from '@/stores/auth';
+
 export default {
     data() {
         return {
@@ -32,6 +35,11 @@ export default {
     methods: {
         getInitials() {
             this.initials = this.name.split(' ').map(name => name[0]).join('')
+        },
+        toMainPage() {
+            if (authStore().isAuth) {
+                this.$router.push('/main')
+            }
         }
     },
     mounted() {
