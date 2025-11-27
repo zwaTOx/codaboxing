@@ -1,0 +1,26 @@
+.citings {
+    border-left: 4px solid var(--gray);
+    padding: 16px;
+    border-radius: 16px;
+
+    font-weight: 300;
+    font-style: italic;
+    color: var(--gray);
+    background-color: var(--black);
+
+    margin-bottom: 24px;
+}
+
+.feedback-success {
+    border-left: 4px solid var(--green);
+    color: var(--green);
+    
+    transition: 0.3s all ease-in-out;
+}
+
+.feedback-error {
+    border-left: 4px solid var(--red);
+    color: var(--red);
+    
+    transition: 0.3s all ease-in-out;
+}

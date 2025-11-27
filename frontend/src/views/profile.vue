@@ -31,7 +31,7 @@
                         Сыграно игр
                     </div>
                     <div class="stats_card__name">
-                        Бокс
+                        БОКС
                     </div>
                     <div class="stats_card__value">
                         4
@@ -60,7 +60,7 @@
                         Текущий
                     </div>
                     <div class="stats_card__name">
-                        Рейтинг
+                        РЕЙТИНГ
                     </div>
                     <div class="stats_card__value">
                         240
@@ -89,7 +89,7 @@
                         Текущий
                     </div>
                     <div class="stats_card__name">
-                        Процент побед
+                        ПРОЦЕНТ ПОБЕД
                     </div>
                     <div class="stats_card__value">
                         33.3%
@@ -118,7 +118,7 @@
                         Текущая
                     </div>
                     <div class="stats_card__name">
-                        Серия побед
+                        СЕРИЯ ПОБЕД
                     </div>
                     <div class="stats_card__value">
                         1

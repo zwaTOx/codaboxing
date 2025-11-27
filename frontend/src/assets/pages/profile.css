@@ -7,19 +7,19 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 16px;
 }
 .profile__descr {
     display: flex;
     gap: 32px;
     align-items: center;
-    margin-bottom: 20px;
+    margin-top: 30px;
 }
 .profile__descr--icon {
     max-width: 264px;
     aspect-ratio: 1 / 1;
     width: 100%;
-    background-color: #fff;
+    background-color: var(--white);
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -41,19 +41,19 @@
 }
 .profile__descr--info--lvl {
     display: flex;
-    gap: 7px;
+    gap: 16px;
     width: 100%;
 }
 .profile__descr--info--lvl--text {
     font-size: 16px;
-    font-weight: bold;
-    color: #f9ca24;
+    font-weight: 800;
+    color: var(--yellow);
 }
 .profile__descr--info--lvl--bar {
     position: relative;
     max-width: 325px;
     width: 100%;
-    background-color: #fff;
+    background-color: var(--white);
     z-index: 1;
     text-align: center;
     border-radius: 3px;
@@ -64,7 +64,7 @@
     height: 100%;
     z-index: 2;
     max-width: 325px;
-    background-color: #f9ca24;
+    background-color: var(--yellow);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 3px;
 }
@@ -89,7 +89,7 @@
 
 .stats_card {
     padding: 12px 0;
-    background-color: #30336b;
+    background-color: var(--blue);
     width: calc((100% - 24px * 3) / 4 );
     border-radius: 12px;
     display: flex;
@@ -103,9 +103,9 @@
 }
 
 .stats_card__name {
-    color: #f9ca24;
+    color: var(--yellow);
     font-size: 24px;
-    font-weight: bold;
+    font-weight: 850;
 }
 
 .stats_card__value {

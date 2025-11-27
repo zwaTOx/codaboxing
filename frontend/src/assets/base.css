@@ -1,7 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-
 * {
   margin: 0;
   padding: 0;
@@ -9,6 +8,17 @@
   font-family: "Inter", sans-serif;
   color: #fff;
   user-select: none;
+
+  --yellow: #f9ca24;
+  --blue: #30336b;
+  --green: #6AB04C;
+  --light-green: #BADC58;
+  --red: #EB4D4B;
+  --light-red: #FF7979; 
+  --white: #fff;
+  --dark: #181620;
+  --black: #0f0e11;
+  --gray: #8e8e8e;
 }
 #app {
   background-color: #130f40;
