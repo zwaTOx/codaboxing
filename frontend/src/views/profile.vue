@@ -146,6 +146,7 @@
 
 <script>
 import historyComponent from '@/components/historyComponent.vue';
+import { userStore } from '@/stores/user'
 
 export default {
     components: { historyComponent },
@@ -199,9 +200,22 @@ export default {
     methods: {
         getInitials(value) {
             return value.split(' ').map(name => name[0]).join('')
+        },
+        async getProfile() {
+            try {
+                const response = await userStore().getProfile()
+                if (response.success) {
+                    console.log('Данные профиля получены',response.data)
+                } else {
+                    console.log('Error fetching profile:', response.error)
+                }
+            } catch (error) {
+                console.log('Error fetching profile:', error)
+            }
         }
     },
-    mounted() {
+    async mounted() {
+        await this.getProfile()
         this.profile.initials = this.getInitials(this.profile.name)
         for (let i = 0; i < this.history.length; i++) {
             this.history[i].opponent_initials = this.getInitials(this.history[i].opponent)
