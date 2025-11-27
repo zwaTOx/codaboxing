@@ -7,11 +7,12 @@ const api = axios.create({
     baseURL: API_BASE_URL,
     headers: {
         'Content-Type': 'application/json'
-    }
+    },
+    withCredentials: true
 })
 
 export const authApi = {
     login: (userData) => api.post('/v1/auth/login', userData),
     register: (userData) => api.post('/v1/auth/signup', userData),
-    refreshToken: () => api.post('/v1/auth/refresh', { withCredentials: true })
+    refreshToken: () => api.post('/v1/auth/refresh')
 }
