@@ -16,7 +16,9 @@
   --red: #EB4D4B;
   --light-red: #FF7979; 
   --white: #fff;
-  --black: #181620;
+  --dark: #181620;
+  --black: #0f0e11;
+  --gray: #8e8e8e;
 }
 #app {
   background-color: #130f40;
