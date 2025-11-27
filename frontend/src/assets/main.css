@@ -1,6 +1,11 @@
 @import './base.css';
 
+/* Pages */
 @import './pages/profile.css';
+@import './pages/loginPage.css';
 
+/* Components */
 @import './components/header.css';
 @import './components/historyCard.css';
+@import './components/borderButton.css';
+@import './components/citings.css';
