@@ -215,7 +215,7 @@ export default {
         }
     },
     async mounted() {
-        // await this.getProfile()
+        await this.getProfile()
         this.profile.initials = this.getInitials(this.profile.name)
         for (let i = 0; i < this.history.length; i++) {
             this.history[i].opponent_initials = this.getInitials(this.history[i].opponent)
