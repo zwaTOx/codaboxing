@@ -17,9 +17,9 @@ export const authStore = defineStore('auth', () => {
             isAuth = true;
             return { success: true, data: response.data }
         } catch (error) {
-            if (error.response.status === 401) {
-                await refreshToken()
-            }
+            // if (error.response.status === 401) {
+            //     await refreshToken()
+            // }
             return { success: false, error: error}
         }
     }
