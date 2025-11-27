@@ -32,8 +32,7 @@ export default {
             if (response.success) {
                 this.$router.push('/profile')
             } else {
-                alert('Ошибка входа: ' + response.error)
-                console.log(response.error)
+                console.log('Login error:', response.error)
             }
         }
     }

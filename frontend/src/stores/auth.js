@@ -14,6 +14,9 @@ export const authStore = defineStore('auth', () => {
             isAuth = true;
             return { success: true, data: response.data }
         } catch (error) {
+            if (error.response.status === 401) {
+                await refreshToken()
+            }
             return { success: false, error: error}
         }
     }
@@ -24,6 +27,16 @@ export const authStore = defineStore('auth', () => {
             return { success: true, data: response.data}
         } catch (error) {
             return { success: false, error: error }
+        }
+    }
+
+    const refreshToken = async () => {
+        try {
+            const response = await authApi.refreshToken()
+            console.log('Token refreshed successfully');
+            return { success: true, data: response.data }
+        } catch (error) {
+            console.log('Error refreshing token:', error)
         }
     }
 

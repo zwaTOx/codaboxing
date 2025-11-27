@@ -12,5 +12,6 @@ const api = axios.create({
 
 export const authApi = {
     login: (userData) => api.post('/v1/auth/login', userData),
-    register: (userData) => api.post('/v1/auth/signup', userData)
+    register: (userData) => api.post('/v1/auth/signup', userData),
+    refreshToken: () => api.post('/v1/auth/refresh', { withCredentials: true })
 }
