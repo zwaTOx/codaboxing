@@ -48,6 +48,7 @@ export default {
             const response = await auth.login(userData)
             if (response.success) {
                 console.log('Cookies after login:', document.cookie)
+                feedbackElement.classList.remove('feedback-error');
                 feedbackElement.classList.add('feedback-success');
                 feedbackElement.innerHTML = "Добро пожаловать!";
 
@@ -58,6 +59,7 @@ export default {
                 
             } else {
                 console.log('Login error:', response.error)
+                feedbackElement.classList.remove('feedback-success');
                 feedbackElement.classList.add('feedback-error');
                 feedbackElement.innerHTML = response.error.response.data.error;
             }
