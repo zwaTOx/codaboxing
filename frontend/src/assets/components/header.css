@@ -3,7 +3,7 @@
     z-index: 10;
     position: sticky;
     top: 0;
-    background: var(--black);
+    background: var(--dark);
     color: #000;
 }
 .header {
