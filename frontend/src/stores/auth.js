@@ -10,6 +10,9 @@ export const authStore = defineStore('auth', () => {
     const login = async (userData) => {
         try {
             const response = await authApi.login(userData)
+            console.log('Login successful:', response.data);
+            saveToCache('token', response.data.accessToken);
+            saveToCache('refresh_token', response.data.refreshToken);
             saveToCache('is_auth', true);
             isAuth = true;
             return { success: true, data: response.data }
