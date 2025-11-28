@@ -32,7 +32,36 @@ public class User {
     @Column(name = "hashed_password")
     private String hashedPassword;  
 
+    // Stats
     @Column(nullable = false)
     @Builder.Default
     private Integer rating = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer maxRating = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer totalGames = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer wins = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer losses = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer currentWinStreak = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer maxWinStreak = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Double winRate = 0.0;
 }

@@ -82,12 +82,7 @@ public class UserService {
         }
     
     public UserProfileResponse getUserInfo(User user) {
-        return UserProfileResponse.builder()
-                .email(user.getEmail())
-                .nickname(user.getNickname())
-                .role(user.getRole())
-                .rating(user.getRating())
-                .build();
+        return new UserProfileResponse(user);
     }
     
     public UserProfileResponse updateUserProfile(User user, UpdateProfileRequest updateRequest) {
