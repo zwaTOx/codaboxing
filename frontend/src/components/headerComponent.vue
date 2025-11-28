@@ -39,8 +39,10 @@ export default {
         toMainPage() {
             if (authStore().isAuth) {
                 this.$router.push('/main')
+            } else {
+                alert('user is not auth')
             }
-        }
+        } 
     },
     mounted() {
         this.getInitials()
