@@ -4,14 +4,30 @@ spring:
     url: ${DB_URL:jdbc:postgresql://database:5432/CodaGonki}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres123}
+    hikari:
+      max-lifetime: 300000 
   jpa:
     open-in-view: false
     hibernate:
       ddl-auto: update
     show-sql: true
+  data:
+    redis:
+      host: redis
+      port: 6379
+      password: ${REDIS_PASSWORD:redis_password_123}
+      database: 0
+      timeout: 2000
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000
+      cache-null-values: false
+      key-prefix: "app:"
+      use-key-prefix: true
 
 jwt:
   access-token-secret: "your-super-secure-access-token-secret-key-minimum-32-chars"
   refresh-token-secret: "your-different-super-secure-refresh-token-secret-key"
-  access-token-expiration: 900000      # 15 минут в миллисекундах
-  refresh-token-expiration: 2592000000 # 30 дней в миллисекундах
+  access-token-expiration: 900000
+  refresh-token-expiration: 2592000000
