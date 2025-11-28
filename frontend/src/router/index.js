@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import profile from '@/views/profile.vue'
+import mainPage from '@/views/mainPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,6 +8,10 @@ const router = createRouter({
     {
       path: '/',
       redirect: '/login'
+    },
+    {
+      path: '/main',
+      component: mainPage
     },
     {
       path: '/profile',
@@ -22,6 +27,11 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: () => import('@/views/registerPage.vue'),
+    },
+    {
+      path: '/find_game',
+      name: 'find',
+      component: () => import('@/views/findGame.vue')
     }
   ],
 })

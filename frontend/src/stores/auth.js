@@ -1,11 +1,13 @@
 import { defineStore } from "pinia";
 import router from '@/router'
+import { ref, computed } from "vue"
 import { saveToCache } from "@/cache/cache";
 import { loadFromCache } from "@/cache/cache";
 import { authApi } from "@/api/auth";
 
 export const authStore = defineStore('auth', () => {
-    let isAuth = false;
+    const isAuth = ref(false);
+    const isAuthenticated = computed(() => isAuth.value);
 
     const login = async (userData) => {
         try {
@@ -14,12 +16,12 @@ export const authStore = defineStore('auth', () => {
             saveToCache('token', response.data.accessToken);
             saveToCache('refresh_token', response.data.refreshToken);
             saveToCache('is_auth', true);
-            isAuth = true;
+            isAuth.value = true;
             return { success: true, data: response.data }
         } catch (error) {
-            if (error.response.status === 401) {
-                await refreshToken()
-            }
+            // if (error.response.status === 401) {
+            //     await refreshToken()
+            // }
             return { success: false, error: error}
         }
     }
@@ -45,16 +47,19 @@ export const authStore = defineStore('auth', () => {
 
     const initialize = async () => {
         if (loadFromCache('is_auth')) {
-            isAuth = true;
+            isAuth.value = true;
             console.log('User is authenticated');
         } else {
             console.log('User is not authenticated', loadFromCache('is_auth'));
         }
     }
 
-    return{
+    return {
+        isAuth: isAuthenticated,
+
         login,
         register,
+        refreshToken,
         initialize
     }
 })
