@@ -14,6 +14,7 @@
                     <div class="header__profile--info--lvl">{{ `${lvl} уровень (${exp})` }}</div>
                 </div>
             </div>
+            <div class="logout" @click="logout()">Выйти</div>
         </div>
     </header>
 </template>
@@ -42,7 +43,11 @@ export default {
             } else {
                 alert('user is not auth')
             }
-        } 
+        } ,
+        logout() {
+            localStorage.clear()
+            authStore().initialize()
+        }
     },
     mounted() {
         this.getInitials()
