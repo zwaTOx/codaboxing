@@ -51,4 +51,10 @@ public class AuthController {
             .header("typ", "JWT")
             .body(tokenResponse);
         }
+
+    @DeleteMapping("/logout")
+    public ResponseEntity<Void> logoutUser(HttpServletResponse response){
+        authService.logoutUser(response);
+        return ResponseEntity.noContent().build();
+    }
 }

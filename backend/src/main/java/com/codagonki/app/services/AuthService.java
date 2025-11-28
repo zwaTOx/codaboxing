@@ -12,6 +12,7 @@ import com.codagonki.app.utils.JwtUtils;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -34,5 +35,9 @@ public class AuthService {
             .accessToken(newAccessToken)
             .refreshToken(newRefreshToken)
             .build();
+    }
+    
+    public void logoutUser(HttpServletResponse response){
+        jwtUtils.clearTokenCookies(response);
     }
 }

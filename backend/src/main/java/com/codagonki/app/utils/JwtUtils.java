@@ -82,4 +82,21 @@ public class JwtUtils {
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
     }
+
+    public void clearTokenCookies(HttpServletResponse response) {
+        Cookie accessTokenCookie = new Cookie("accessToken", "");
+        accessTokenCookie.setHttpOnly(false);
+        accessTokenCookie.setSecure(false);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(0); 
+        
+        Cookie refreshTokenCookie = new Cookie("refreshToken", "");
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(false);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(0); 
+        
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
+}
 }
