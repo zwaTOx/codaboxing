@@ -59,6 +59,7 @@ export const authStore = defineStore('auth', () => {
 
         login,
         register,
+        refreshToken,
         initialize
     }
 })
