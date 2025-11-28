@@ -70,12 +70,14 @@ public class JwtUtils {
         accessTokenCookie.setSecure(false);
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge((int) TimeUnit.MINUTES.toSeconds(30)); 
+        accessTokenCookie.setAttribute("SameSite", "Lax");
         
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setSecure(false);
         refreshTokenCookie.setPath("/"); 
         refreshTokenCookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(7)); 
+        refreshTokenCookie.setAttribute("SameSite", "Lax");
 
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
