@@ -31,7 +31,7 @@ const router = createRouter({
     {
       path: '/find_game',
       name: 'find',
-      component: 
+      component: () => import('@/views/findGame.vue')
     }
   ],
 })

@@ -10,13 +10,25 @@
 
 
 <script>
+import { useDuelStore } from '@/stores/duels';
+
 export default {
     name: 'main',
     methods: {
-        
+        async connectDuel() {
+            try {
+                const response = await useDuelStore().connectDuel()
+
+                if (response.success) {
+                    console.log('дуэль найдена')
+                }
+            } catch(error) {
+
+            }
+        }
     },
     async mounted() {
-
+        await this.connectDuel()
     }
 }
 </script>

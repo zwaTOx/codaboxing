@@ -55,7 +55,7 @@ export default {
                 setTimeout(() => {
                     console.log('Cookies after login:', document.cookie)
                     this.$router.push('/profile')
-                }, 5000);
+                }, 2000);
                 
             } else {
                 console.log('Login error:', response.error)
