@@ -38,7 +38,7 @@ public class UserService {
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
             throw new ResponseStatusException(
                 HttpStatus.CONFLICT, 
-                "Пользователь с таким email уже существует"
+                "Пользователь с таким e-mail уже существует. Попробуйте снова."
             );
         }
         User user = User.builder()
@@ -61,7 +61,7 @@ public class UserService {
         if (userOptional.isEmpty()) {
             throw new ResponseStatusException(
                 HttpStatus.UNAUTHORIZED,
-                "Пользователь с таким email не существует"
+                "Введен неправильний e-mail или пароль."
             );
         }
         User user = userOptional.get();
@@ -69,7 +69,7 @@ public class UserService {
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getHashedPassword())) {
             throw new ResponseStatusException(
                 HttpStatus.UNAUTHORIZED,
-                "Неверный пароль"
+                "Введен неправильний e-mail или пароль."
             );
         }
         String access_token = jwtTokenProvider.generateAccessToken(user.getId(), user.getRole());
