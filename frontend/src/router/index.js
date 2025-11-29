@@ -8,7 +8,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/login',
+      redirect: '/main',
     },
     {
       path: '/main',
@@ -65,35 +65,37 @@ const router = createRouter({
   }
 })
 
-router.beforeEach((to, from, next) => {
-  const store = authStore()
-  
+router.beforeEach((to, from, next) => {  
+  const store = authStore();
   const isAuthenticated = store.isAuth
-  console.log('Роутер',store.isAuth)
+
+  console.log('Роутер', store.isAuth)
   if (to.meta.title) {
     document.title = `${to.meta.title} | CodeGonks`
   }
-  
-  if (to.meta.requiresAuth) {
-    if (!isAuthenticated) {
-      console.log('Неавторизованный доступ к защищенному маршруту:', isAuthenticated)
-      next({ 
-        name: 'login',
-        query: { redirect: to.fullPath } 
-      })
-    } else {
-      next()
-    }
-  } 
-  else if (to.name === 'Login' && isAuthenticated) {
-    next({ name: 'main' })
-  } 
-  else {
-    next()
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    console.log('Redirecting to login - not authenticated')
+    next({ 
+      name: 'login',
+      query: { redirect: to.fullPath } 
+    })
+    return
   }
+  
+  if ((to.name === 'login' || to.name === 'register') && isAuthenticated) {
+    console.log('Redirecting to main - already authenticated')
+    next({ name: 'main' })
+    return
+  }
+  next();
 })
 
 router.afterEach((to, from) => {
+  const store = authStore();
+  const isAuthenticated = store.isAuth;
+
+  console.log(to.meta, isAuthenticated)
   console.log(`Переход с ${from.fullPath} на ${to.fullPath}`)
 })
 

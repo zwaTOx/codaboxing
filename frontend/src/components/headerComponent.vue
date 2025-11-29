@@ -14,7 +14,7 @@
                     <div class="header__profile--info--lvl">{{ `${lvl} уровень (${exp})` }}</div>
                 </div>
             </div>
-            <div class="logout" @click="logout()">Выйти</div>
+            <div v-if="isAuthenticated" class="logout border-button" @click="logout()">Выйти</div>
         </div>
     </header>
 </template>
@@ -22,7 +22,6 @@
 <script>
 import router from '@/router';
 import { authStore } from '@/stores/auth';
-
 export default {
     data() {
         return {
@@ -30,7 +29,12 @@ export default {
             lvl: 2,
             exp: 240,
             name: 'Константин Денисов',
-            initials: ''
+            initials: '',
+        }
+    },
+    computed: {
+        isAuthenticated() {
+            return authStore().isAuth
         }
     },
     methods: {
@@ -38,7 +42,7 @@ export default {
             this.initials = this.name.split(' ').map(name => name[0]).join('')
         },
         toMainPage() {
-            if (authStore().isAuth) {
+            if (this.isAuthenticated) {
                 this.$router.push('/main')
             } else {
                 alert('user is not auth')
@@ -47,6 +51,7 @@ export default {
         logout() {
             localStorage.clear()
             authStore().initialize()
+            this.$router.push('/login')
         }
     },
     mounted() {
