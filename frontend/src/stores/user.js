@@ -10,6 +10,7 @@ export const userStore = defineStore('user', () => {
     const getProfile = async () => {
         try {
             const response = await userApi.profileInfo()
+            console.log(response)
             return { success: true, data: response.data }
         } catch (error) {
             if (error.response.status === 401) {

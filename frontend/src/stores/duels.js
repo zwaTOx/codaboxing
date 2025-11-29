@@ -8,7 +8,7 @@ export const useDuelStore = defineStore('duels', () => {
             const response = await duelsApi.connectDuel()
             return { success: true, data: response.data }
         } catch (error) {
-            console.log('дуэль не найдена, попытка создать')
+            console.log('дуэль не найдена, попытка создать', error)
             if (error.response.status === 400) {
                 const create = await createDuel()
                 if (create.success) {

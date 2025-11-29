@@ -205,7 +205,7 @@ export default {
             try {
                 const response = await userStore().getProfile()
                 if (response.success) {
-                    console.log('Данные профиля получены',response.data)
+                    console.log('Данные профиля получены', response)
                 } else {
                     console.log('Error fetching profile:', response.error)
                 }
