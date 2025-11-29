@@ -2,10 +2,10 @@ package com.codagonki.app.controllers.v1;
 
 import com.codagonki.app.DTO.Auth.LoginRequest;
 import com.codagonki.app.DTO.Auth.SignupRequest;
+import com.codagonki.app.DTO.Auth.TokenPair;
 import com.codagonki.app.DTO.Auth.TokenResponse;
 import com.codagonki.app.DTO.User.UserResponse;
 import com.codagonki.app.services.AuthService;
-import com.codagonki.app.services.UserService;
 import com.codagonki.app.utils.JwtUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,21 +22,22 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    private final UserService userService;
     private final JwtUtils jwtUtils;
 
     @PostMapping("/signup")
     public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
-        UserResponse user = userService.registerUser(signupRequest);
+        UserResponse user = authService.registerUser(signupRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest,
                                                 HttpServletResponse response) { 
-        TokenResponse tokenResponse = userService.authenticateUser(loginRequest);
-        jwtUtils.setTokenCookies(response, tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
+        TokenPair tokenPair = authService.authenticateUser(loginRequest);
+        jwtUtils.setTokenCookies(response, tokenPair.getRefreshToken());
+        TokenResponse tokenResponse = TokenResponse.of(tokenPair.getAccessToken());
         return ResponseEntity.ok()
+            .header("Authorization", tokenPair.getAccessToken())
             .header("alg", "HS256")
             .header("typ", "JWT")
             .body(tokenResponse);
@@ -44,9 +45,11 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponse> refreshTokens(HttpServletRequest request, HttpServletResponse response) { 
-        TokenResponse tokenResponse = authService.refreshTokens(request);
-        jwtUtils.setTokenCookies(response, tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
+        TokenPair tokenPair = authService.refreshTokens(request);
+        jwtUtils.setTokenCookies(response, tokenPair.getRefreshToken());
+        TokenResponse tokenResponse = TokenResponse.of(tokenPair.getAccessToken());
         return ResponseEntity.ok()
+            .header("Authorization", "Bearer " + tokenPair.getAccessToken())
             .header("alg", "HS256")
             .header("typ", "JWT")
             .body(tokenResponse);
@@ -55,6 +58,8 @@ public class AuthController {
     @DeleteMapping("/logout")
     public ResponseEntity<Void> logoutUser(HttpServletResponse response){
         authService.logoutUser(response);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent()
+            .header("Authorization", "")
+            .build();
     }
 }

@@ -35,6 +35,6 @@ public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentR
                                  @NonNull NativeWebRequest webRequest, 
                                  @Nullable WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        return jwtUtils.getUserFromCookie(request);
+        return jwtUtils.getUserFromToken(request);
     }
 }
