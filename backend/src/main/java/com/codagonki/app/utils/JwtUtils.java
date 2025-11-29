@@ -23,10 +23,18 @@ public class JwtUtils {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     
-    public User getUserFromCookie(HttpServletRequest request) {
-        String accessToken = getCookieValue(request, "accessToken");
+    private String getTokenFromHeader(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        }
+        return null;
+    }
+
+    public User getUserFromToken(HttpServletRequest request) {
+        String accessToken = getTokenFromHeader(request);
         if (accessToken == null || accessToken.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access token не найден в куках");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access token не найден в заголовке Authorization");
         }
         
         if (!jwtTokenProvider.validateAccessToken(accessToken)) {
@@ -64,39 +72,22 @@ public class JwtUtils {
         return null;
     }
 
-    public void setTokenCookies(HttpServletResponse response, String accessToken, String refreshToken) {        
-        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-        accessTokenCookie.setHttpOnly(false);
-        accessTokenCookie.setSecure(false);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge((int) TimeUnit.MINUTES.toSeconds(30)); 
-        accessTokenCookie.setAttribute("SameSite", "Lax");
-        
+    public void setTokenCookies(HttpServletResponse response, String refreshToken) {        
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setSecure(false);
         refreshTokenCookie.setPath("/"); 
         refreshTokenCookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(7)); 
         refreshTokenCookie.setAttribute("SameSite", "Lax");
-
-        response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
     }
 
     public void clearTokenCookies(HttpServletResponse response) {
-        Cookie accessTokenCookie = new Cookie("accessToken", "");
-        accessTokenCookie.setHttpOnly(false);
-        accessTokenCookie.setSecure(false);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(0); 
-        
         Cookie refreshTokenCookie = new Cookie("refreshToken", "");
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setSecure(false);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge(0); 
-        
-        response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
 }
 }
