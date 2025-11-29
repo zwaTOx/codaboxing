@@ -10,7 +10,10 @@
   user-select: none;
 
   --yellow: #f9ca24;
+  --yellow-ball: #9C7244;
   --blue: #30336b;
+  --blue-ball: #686DE0;
+  --bg-color: #130f40;
   --green: #6AB04C;
   --light-green: #BADC58;
   --red: #EB4D4B;
@@ -24,8 +27,10 @@
   background-color: #130f40;
 }
 .main {
+  position: relative;
   max-width: 1012px;
   margin: 0 auto;
+  z-index: 1;
 }
 .icon {
   width: 24px;
@@ -38,4 +43,35 @@
 }
 button {
   color: #000;
+}
+.yellow-ball {
+  position: fixed;
+  z-index: 0;
+  border-radius: 50%;
+
+  background: radial-gradient(var(--yellow-ball) 0%, var(--bg-color) 70%);
+
+  top: -64px;
+  left: -64px;
+  width: 128px;
+  height: 128px;
+
+  transform: scale(12, 12);
+  background-color: var(--white);
+}
+
+.blue-ball {
+  position: fixed;
+  z-index: 0;
+  border-radius: 50%;
+
+  background: radial-gradient(var(--blue-ball) 0%, var(--bg-color) 70%);
+
+  bottom: -64px;
+  right: -64px;
+  width: 128px;
+  height: 128px;
+
+  transform: scale(10, 10);
+  background-color: var(--white);
 }
