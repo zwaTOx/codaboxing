@@ -9,7 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.codagonki.app.DTO.Auth.LoginRequest;
 import com.codagonki.app.DTO.Auth.SignupRequest;
-import com.codagonki.app.DTO.Auth.TokenResponse;
+import com.codagonki.app.DTO.Auth.TokenPair;
 import com.codagonki.app.DTO.User.UserResponse;
 import com.codagonki.app.models.User;
 import com.codagonki.app.repositories.UserRepository;
@@ -56,7 +56,7 @@ public class AuthService {
             .build();
     }
     
-    public TokenResponse authenticateUser(LoginRequest loginRequest) {
+    public TokenPair authenticateUser(LoginRequest loginRequest) {
         Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
 
         if (userOptional.isEmpty()) {
@@ -73,16 +73,12 @@ public class AuthService {
                 "Введен неправильний e-mail или пароль."
             );
         }
-        String access_token = jwtTokenProvider.generateAccessToken(user.getId(), user.getRole());
-        String refresh_token = jwtTokenProvider.generateRefreshToken(user.getId());
-        return TokenResponse.builder()
-            .accessToken(access_token)
-            .refreshToken(refresh_token)
-            .tokenType("Bearer")
-            .build();
+        String accessToken = jwtTokenProvider.generateAccessToken(user.getId(), user.getRole());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
+        return TokenPair.of(accessToken, refreshToken);
         }
 
-    public TokenResponse refreshTokens(HttpServletRequest request) {
+    public TokenPair refreshTokens(HttpServletRequest request) {
         String refreshToken = jwtUtils.getRefreshTokenFromCookie(request);
         jwtTokenProvider.validateRefreshToken(refreshToken);
         Claims claims = jwtTokenProvider.getRefreshTokenClaims(refreshToken);
@@ -91,10 +87,7 @@ public class AuthService {
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Пользователь не найден"));
         String newAccessToken = jwtTokenProvider.generateAccessToken(user.getId(), user.getRole());
         String newRefreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
-        return TokenResponse.builder()
-            .accessToken(newAccessToken)
-            .refreshToken(newRefreshToken)
-            .build();
+        return TokenPair.of(newAccessToken, newRefreshToken);
     }
     
     public void logoutUser(HttpServletResponse response){
