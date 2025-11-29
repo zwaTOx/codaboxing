@@ -1,7 +1,7 @@
 <template>
     <div class="PageWrapper">
         <div class="authPage">
-            <h1 class="authPage__title">Вход в аккаунт</h1>
+            <h1 class="authPage__title">Вход в аккаунт</h1> 
             <CitingsComponent></CitingsComponent>
             <form class="authPage__form" @submit.prevent="handleLogin">
                 <div class="authPage__input-container"
@@ -17,6 +17,7 @@
                     class="authPage__form--input" />
                 </div>
                 <button type="submit" class="border-button authPage__form--button">Войти</button>
+                <div class="authPage__registration">Нет аккаунта? <u @click="toRegistration">Зарегистрируйтесь</u></div>
             </form>
         </div>
     </div>
@@ -75,6 +76,9 @@ export default {
                 field.classList.add('active-field')
                 field.focus()
             }
+        },
+        toRegistration() {
+            this.$router.push('register');
         },
     }
 }

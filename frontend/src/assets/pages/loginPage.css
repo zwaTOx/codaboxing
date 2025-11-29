@@ -112,3 +112,20 @@
 
     transition: 0.3s font-size ease-out;
 }
+
+.authPage__registration {
+    align-self: center;
+    width: max-content;
+    margin-top: 12px;
+
+    color: var(--gray);
+    font-style: italic;
+}
+
+.authPage__registration u {
+    transition: 0.2s all;
+}
+.authPage__registration u:hover {
+    color: var(--yellow);
+    transition: 0.1s all;
+}

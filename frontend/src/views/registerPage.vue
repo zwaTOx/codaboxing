@@ -20,6 +20,7 @@
                     <input id="verify-password-field" v-model="form.verifyPassword" type="password" placeholder="Подтвердите пароль" required class="authPage__form--input" />
                 </div>
                 <button type="submit" class="authPage__form--button border-button">Зарегистрироваться</button>
+                <div class="authPage__registration">Уже зарегистрированы? <u @click="toLogin">Авторизуйтесь</u></div>
             </form>
         </div>
     </div>
@@ -28,6 +29,7 @@
 <script setup>
 import CitingsComponent from '@/components/citingsComponent.vue';
 </script>
+
 <script>
 import router from '@/router';
 import { authStore } from '@/stores/auth'
@@ -69,6 +71,9 @@ export default {
                 field.classList.add('active-field')
                 field.focus()
             }
+        },
+        toLogin() {
+            router.push('login');
         },
     },
     mounted() {

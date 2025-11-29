@@ -51,7 +51,6 @@ export const authStore = defineStore('auth', () => {
             console.log('User is authenticated');
         } else {
             isAuth.value = false;
-            router.push('/login')
             console.log('User is not authenticated', loadFromCache('is_auth'));
         }
     }
