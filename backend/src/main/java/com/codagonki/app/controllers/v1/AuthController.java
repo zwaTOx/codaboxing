@@ -5,7 +5,6 @@ import com.codagonki.app.DTO.Auth.SignupRequest;
 import com.codagonki.app.DTO.Auth.TokenResponse;
 import com.codagonki.app.DTO.User.UserResponse;
 import com.codagonki.app.services.AuthService;
-import com.codagonki.app.services.UserService;
 import com.codagonki.app.utils.JwtUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,19 +21,18 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    private final UserService userService;
     private final JwtUtils jwtUtils;
 
     @PostMapping("/signup")
     public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
-        UserResponse user = userService.registerUser(signupRequest);
+        UserResponse user = authService.registerUser(signupRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest,
                                                 HttpServletResponse response) { 
-        TokenResponse tokenResponse = userService.authenticateUser(loginRequest);
+        TokenResponse tokenResponse = authService.authenticateUser(loginRequest);
         jwtUtils.setTokenCookies(response, tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
         return ResponseEntity.ok()
             .header("alg", "HS256")
