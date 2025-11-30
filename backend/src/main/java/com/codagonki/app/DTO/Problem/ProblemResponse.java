@@ -1,0 +1,39 @@
+package com.codagonki.app.DTO.Problem;
+
+import com.codagonki.app.models.Problem;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProblemResponse {
+    private Long id;
+    private String title;
+    private String description;
+    @JsonProperty("examples")
+    private String examples;
+    private Problem.Difficulty difficulty;
+    @JsonProperty("hints")
+    private String hints;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public ProblemResponse(Problem problem) {
+        this.id = problem.getId();
+        this.title = problem.getTitle();
+        this.description = problem.getDescription();
+        this.examples = problem.getExamples();
+        this.difficulty = problem.getDifficulty();
+        this.createdAt = problem.getCreatedAt();
+        this.updatedAt = problem.getUpdatedAt();
+        this.hints = problem.getHints();
+    }
+}
