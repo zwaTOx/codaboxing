@@ -2,7 +2,9 @@ package com.codagonki.app.repositories;
 
 import com.codagonki.app.models.Duel;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.lang.NonNull;
 import org.springframework.data.domain.Page;
@@ -45,4 +47,6 @@ public interface DuelRepository extends JpaRepository<Duel, Long> {
         return existsByHostUserIdAndStatus(userId, Duel.DuelStatus.WAITING);
     }
 
+    @Query("SELECT d FROM Duel d LEFT JOIN FETCH d.problems WHERE d.id = :duelId")
+    Optional<Duel> findByIdWithProblems(@Param("duelId") Long id);
 }
