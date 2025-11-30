@@ -36,9 +36,11 @@ public class DuelController {
     
 
     @PostMapping("")
-    public ResponseEntity<DuelResponse> createNewDuel(@CurrentUser User user) {
+    public ResponseEntity<DuelResponse> createNewDuel(
+            @CurrentUser User user,
+            @RequestParam(defaultValue = "3") Integer problemCount) {
         try {
-            DuelResponse duelInfo = duelService.createDuel(user);
+            DuelResponse duelInfo = duelService.createDuel(user, problemCount);
             return ResponseEntity.ok(duelInfo);
         } catch (RuntimeException e) {
             throw new ResponseStatusException(

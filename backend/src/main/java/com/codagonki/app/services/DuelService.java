@@ -1,5 +1,6 @@
 package com.codagonki.app.services;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,14 +16,17 @@ import com.codagonki.app.models.Duel;
 import com.codagonki.app.models.User;
 import com.codagonki.app.repositories.DuelRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class DuelService {
     private final DuelRepository duelRepository;
+    private final ProblemService problemService;
     
     public DuelsPaginationResponse getUserDuelsPage(Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
@@ -39,7 +43,7 @@ public class DuelService {
         );
     }
 
-    public DuelResponse createDuel(User user) {
+    public DuelResponse createDuel(User user, Integer problemCount) {
         if (duelRepository.hasActiveDuel(user.getId())) {
             throw new RuntimeException("Пользователь уже находится в дуэли");
         }
@@ -52,6 +56,7 @@ public class DuelService {
                 .status(Duel.DuelStatus.WAITING)
                 .createdAt(LocalDateTime.now())
                 .build();
+        problemService.generateRandomProblems(newDuel, problemCount);
         Duel savedDuel = duelRepository.save(newDuel);
         return DuelResponse.fromEntity(savedDuel);
     }
@@ -59,7 +64,7 @@ public class DuelService {
     public DuelResponse connectToDuel(User user) {
         List<Duel> availableDuel = duelRepository.findWaitingDuels();
         if (availableDuel.isEmpty()) {
-        throw new RuntimeException("Нет доступных для подключения дуэлей");
+            throw new RuntimeException("Нет доступных для подключения дуэлей");
         }
         Duel duelToConnect = availableDuel.get(0);
         if (duelToConnect.getHostUserId().equals(user.getId())) {
@@ -85,7 +90,10 @@ public class DuelService {
             duelRepository.delete(duel);
             return;
         }
-
+        
+        if (Arrays.asList(Duel.DuelStatus.CANCELLED, Duel.DuelStatus.COMPLETED).contains(duel.getStatus())) {
+            throw new RuntimeException("Дуэль уже завершена или отменена");
+        }
         
         if (duel.getStatus() != Duel.DuelStatus.ACTIVE) {
             throw new RuntimeException("Нельзя отключиться из неактивной дуэли");
