@@ -12,7 +12,7 @@ public class TokenPair {
 
     public static TokenPair of(String accessToken, String refreshToken) {
         return TokenPair.builder()
-            .accessToken("Bearer " + accessToken)
+            .accessToken(accessToken)
             .refreshToken(refreshToken)
             .tokenType("Bearer")
             .build();
