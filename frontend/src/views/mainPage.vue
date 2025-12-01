@@ -3,7 +3,7 @@
         <div class="mainPage">
             <h1 class="title">Добро пожаловать</h1>
             <div class="button_group">
-                <button @click="start">Начать игру</button>
+                <button class="border-button btn" @click="start">Начать игру</button>
             </div>
         </div>
     </div>
@@ -21,3 +21,13 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.title {
+    margin-bottom: 14px;
+}
+.btn {
+    background-color: var(--dark);
+    width: 100%;
+}
+</style>
