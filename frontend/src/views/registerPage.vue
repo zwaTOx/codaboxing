@@ -48,12 +48,24 @@ export default {
     methods: {
         async handleRegister() {
             try {
+                const feedbackElement = document.querySelector('#feedback');
+
                 const response = await authStore().register(this.form)
                 if (response.success) {
-                    router.push('/login')
-                    console.log('Registration successful')
+                    feedbackElement.classList.remove('feedback-error');
+                    feedbackElement.classList.add('feedback-success');
+                    feedbackElement.innerHTML = `Привет, <b>${response.data.email}</b>! Теперь авторизуйся.`;
+                    console.log(response);
+
+                    setTimeout(() => {
+                        router.push('/login');
+                        console.log('Registration successful');
+                    }, 2000);
+
                 } else {
-                    alert('Ошибка регистрации')
+                    feedbackElement.classList.remove('feedback-success');
+                    feedbackElement.classList.add('feedback-error');
+                    feedbackElement.innerHTML = response.error.response.data.error;
                     console.log(response.error)
                 }
             } catch (error) {
