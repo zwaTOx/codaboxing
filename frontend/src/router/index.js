@@ -38,6 +38,16 @@ const router = createRouter({
       }
     },
     {
+      path: '/game/:id',
+      name: ' ',
+      component: () => import('@/views/game.vue'),
+      meta: {
+        requiresAuth: true,
+        title: 'Дуэль'
+      },
+      props: true,
+    },
+    {
       path: '/register',
       name: 'register',
       component: () => import('@/views/registerPage.vue'),
