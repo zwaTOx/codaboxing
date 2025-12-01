@@ -35,7 +35,7 @@ export const useDuelStore = defineStore('duels', () => {
 
     const disconnect = async (duelId) => {
         try {
-            const response = await duelsApi.disconnect()
+            const response = await duelsApi.disconnect(duelId)
             return { success: true, data: response.data }
         } catch (error) {
             return { success: false, error: error}

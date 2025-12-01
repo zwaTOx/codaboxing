@@ -4,6 +4,7 @@
     gap: 16px;
 }
 .profile_comp {
+    margin-bottom: 32px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -48,6 +49,7 @@
     font-size: 16px;
     font-weight: 800;
     color: var(--yellow);
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 .profile__descr--info--lvl--bar {
     position: relative;
@@ -58,6 +60,7 @@
     text-align: center;
     border-radius: 3px;
     transform: skewX(-30deg);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 .profile__descr--info--lvl--bar--currentbar {
     position: relative;
@@ -65,7 +68,6 @@
     z-index: 2;
     max-width: 325px;
     background-color: var(--yellow);
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 3px;
 }
 .currentbar__text {

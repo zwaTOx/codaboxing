@@ -124,6 +124,7 @@
 
 .authPage__registration u {
     transition: 0.2s all;
+    cursor: pointer;
 }
 .authPage__registration u:hover {
     color: var(--yellow);

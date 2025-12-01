@@ -20,7 +20,8 @@ export default {
                 const response = await useDuelStore().connectDuel()
 
                 if (response.success) {
-                    console.log('дуэль найдена')
+                    console.log('дуэль найдена', response.data.id)
+                    this.$router.push({ path: `game/${response.data.id}`, params: { id: response.data.id },  })
                 }
             } catch(error) {
 

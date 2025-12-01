@@ -3,6 +3,7 @@
 /* Pages */
 @import './pages/profile.css';
 @import './pages/loginPage.css';
+@import './pages/game.css';
 
 /* Components */
 @import './components/header.css';
