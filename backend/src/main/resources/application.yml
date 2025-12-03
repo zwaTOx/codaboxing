@@ -6,6 +6,10 @@ spring:
     password: ${DB_PASSWORD:postgres123}
     hikari:
       max-lifetime: 300000 
+      connection-timeout: 30000
+  sql:
+    init:
+      mode: always
   jpa:
     open-in-view: false
     hibernate:
@@ -29,5 +33,5 @@ spring:
 jwt:
   access-token-secret: "your-super-secure-access-token-secret-key-minimum-32-chars"
   refresh-token-secret: "your-different-super-secure-refresh-token-secret-key"
-  access-token-expiration: 900000
-  refresh-token-expiration: 2592000000
+  access-token-expiration: 900000  # 15 минут
+  refresh-token-expiration: 2592000000  # 30 дней
