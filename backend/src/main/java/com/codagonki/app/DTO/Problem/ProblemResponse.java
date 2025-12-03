@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -19,10 +20,10 @@ public class ProblemResponse {
     private String title;
     private String description;
     @JsonProperty("examples")
-    private String examples;
+    private List<ExampleResponse> examples;
     private Problem.Difficulty difficulty;
     @JsonProperty("hints")
-    private String hints;
+    private List<HintResponse> hints;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

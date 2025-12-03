@@ -9,6 +9,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import com.codagonki.app.DTO.Problem.ExampleResponse;
+import com.codagonki.app.DTO.Problem.HintResponse;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -31,8 +36,9 @@ public class Problem {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
 
-    @Column(columnDefinition = "TEXT")
-    private String examples; // JSON 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private List<ExampleResponse> examples;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -50,8 +56,9 @@ public class Problem {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "hints", columnDefinition = "TEXT")
-    private String hints; // JSON 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "hints", columnDefinition = "jsonb")
+    private List<HintResponse> hints;
 
     @ManyToMany(mappedBy = "problems")
     @Builder.Default
