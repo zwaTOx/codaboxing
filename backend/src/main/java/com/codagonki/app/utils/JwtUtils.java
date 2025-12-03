@@ -86,7 +86,7 @@ public class JwtUtils {
         Cookie refreshTokenCookie = new Cookie("refreshToken", "");
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setSecure(false);
-        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setPath("/api/auth/refresh");
         refreshTokenCookie.setMaxAge(0); 
         response.addCookie(refreshTokenCookie);
 }
