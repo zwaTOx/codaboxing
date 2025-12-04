@@ -5,7 +5,6 @@ import traceback
 import subprocess
 import sys
 from typing import List, Dict, Any, Optional
-from pydantic import BaseModel
 
 from src.schemas.CompileRequests import CompileRequest  
 from src.schemas.CompileResponses import TestCaseResult 
@@ -27,7 +26,6 @@ class CompileService:
             try:
                 input_value = self._extract_input_values(test_case.input)
                 
-                # Генерируем строку аргументов для передачи в функцию execute
                 args_str = self._prepare_arguments_for_execute(input_value)
                 
                 full_script = f"""
@@ -37,10 +35,7 @@ import json
 {compile_request.code}
 
 def main():
-    # Вызываем функцию с переданными значениями
     result = execute({args_str})
-    
-    # Возвращаем результат
     try:
         print(json.dumps({{"result": result}}))
     except (TypeError, ValueError):
@@ -196,7 +191,6 @@ if __name__ == "__main__":
                 if str(expected_value) == str(actual_output):
                     status = "PASSED"
                     error_message = None
-                    print(f"DEBUG - Тест пройден")
                 else:
                     status = "FAILED"
                     error_message = f"Ожидалось: {expected_value}, Получено: {actual_output}"
