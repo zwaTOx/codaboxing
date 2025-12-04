@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.codagonki.app.DTO.Duel.DuelResponse;
 import com.codagonki.app.DTO.Duel.DuelsPaginationResponse;
@@ -24,10 +26,20 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class DuelService {
+public class DuelService{
     private final DuelRepository duelRepository;
-    private final ProblemService problemService;
+    private final ProblemGenerateService problemGenerateService;
     
+    public boolean isUserParticipatingInDuel(Long userId, Long duelId) {
+        return duelRepository.findById(duelId)
+            .map(duel -> userId.equals(duel.getHostUserId()) || 
+                userId.equals(duel.getConnectingUserId()))
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,  
+                "Дуэль не найдена"
+            ));
+    }
+
     public DuelsPaginationResponse getUserDuelsPage(Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Duel> duelsPage = duelRepository.findByHostUserIdOrConnectingUserId(userId, userId, pageable);
@@ -56,7 +68,7 @@ public class DuelService {
                 .status(Duel.DuelStatus.WAITING)
                 .createdAt(LocalDateTime.now())
                 .build();
-        problemService.generateRandomProblems(newDuel, problemCount);
+        problemGenerateService.generateRandomProblems(newDuel, problemCount);
         Duel savedDuel = duelRepository.save(newDuel);
         return DuelResponse.fromEntity(savedDuel);
     }
