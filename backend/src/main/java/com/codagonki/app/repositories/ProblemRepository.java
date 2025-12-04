@@ -23,6 +23,13 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
     @Query("SELECT p FROM Problem p JOIN p.duels d WHERE d.id = :id")
     List<Problem> findByDuelId(@Param("id") Long id);
 
+    @Query("SELECT COUNT(p) > 0 FROM Problem p JOIN p.duels d " +
+        "WHERE d.id = :duelId AND p.id = :problemId")
+    boolean existsProblemInDuel(
+        @Param("duelId") Long duelId,
+        @Param("problemId") Long problemId
+    );
+
     @Query(value = """
         SELECT * FROM problems 
         WHERE id IN (
