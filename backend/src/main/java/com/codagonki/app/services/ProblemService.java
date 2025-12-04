@@ -14,7 +14,6 @@ import com.codagonki.app.DTO.Problem.SubmitRequest;
 import com.codagonki.app.DTO.TestCase.SubmitSummary;
 import com.codagonki.app.DTO.TestCase.TestCaseListResponse;
 import com.codagonki.app.DTO.TestCase.TestCaseResult;
-import com.codagonki.app.models.Duel;
 import com.codagonki.app.models.Problem;
 import com.codagonki.app.models.User;
 import com.codagonki.app.repositories.DuelRepository;
@@ -26,21 +25,10 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class ProblemService {
+public class ProblemService{
     private final ProblemRepository problemRepository;
     private final DuelRepository duelRepository;
-
-    @Transactional
-    public boolean generateRandomProblems(Duel duel, int count) {
-        if (problemRepository.getProblemCount(duel.getId()) != 0){
-            return false;
-        }
-        List<Problem> problems = problemRepository.findRandomProblems(count);
-        duel.getProblems().clear();
-        duel.getProblems().addAll(problems);
-        duelRepository.save(duel);
-        return true;
-    }  
+    private final DuelService duelService;
 
     public List<ProblemResponse> getDuelProblems(Long duelId){
         List <Problem> problems = problemRepository.findByDuelId(duelId);
@@ -61,6 +49,18 @@ public class ProblemService {
             Long duelId, 
             Long problemId, 
             SubmitRequest submitRequest){
+        if (!duelService.isUserParticipatingInDuel(user.getId(), duelId)){
+            throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,  
+                "Нет доступа к дуэли"
+            );
+        }
+        if (!problemRepository.existsProblemInDuel(duelId, problemId)){
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND,  
+                "Проблема не найдена в дуэли"
+            );
+        }
         String code = submitRequest.getCode();
         // Testing code in python
         // res = [output]
