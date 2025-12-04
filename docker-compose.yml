@@ -27,12 +27,23 @@ services:
     networks:
       - app-network
 
+  python-compiler:
+    build:
+      context: /python-compiler
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "80:3000"
+    environment:
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL}
     depends_on:
       - backend
     networks:
@@ -41,3 +52,7 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:  
+  # postgres_data:
+  redis_data:
