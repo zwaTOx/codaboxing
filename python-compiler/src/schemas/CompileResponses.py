@@ -3,9 +3,9 @@ from pydantic import BaseModel, Field, field_validator
 
 
 class TestCaseResult(BaseModel):
-    input: Dict[str, Any]
-    expectedOutput: Dict[str, Any]
-    actualOutput: Dict[str, Any]
+    inputData: Dict[str, Any]
+    expectedOutput: Any
+    actualOutput: Any
     status: str #'FAILED', 'PASSED', 'ERROR'
     errorMessage: Optional[str] = Field(default="")
     executionTime: Optional[float] = None

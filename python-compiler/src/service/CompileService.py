@@ -6,7 +6,7 @@ import subprocess
 import sys
 from typing import List, Dict, Any, Optional
 
-from src.schemas.CompileRequests import CompileRequest  
+from src.schemas.CompileRequests import CompileRequest, TestCase  
 from src.schemas.CompileResponses import TestCaseResult 
 
 class CompileService:
@@ -24,7 +24,7 @@ class CompileService:
         
         for test_case in test_cases:
             try:
-                input_value = self._extract_input_values(test_case.input)
+                input_value = self._extract_input_values(test_case.inputData)
                 
                 args_str = self._prepare_arguments_for_execute(input_value)
                 
@@ -67,7 +67,7 @@ if __name__ == "__main__":
                     
                 except asyncio.TimeoutError:
                     result = TestCaseResult(
-                        input=test_case.input,
+                        inputData=test_case.inputData,
                         expectedOutput=test_case.expectedOutput,
                         actualOutput={"error": "timeout"},
                         status="ERROR",
@@ -81,7 +81,7 @@ if __name__ == "__main__":
                 error_details = traceback.format_exc()
 
                 result = TestCaseResult(
-                    input=test_case.input,
+                    inputData=test_case.inputData,
                     expectedOutput=test_case.expectedOutput,
                     actualOutput={"error": "execution_failed"},
                     status="ERROR",
@@ -111,11 +111,11 @@ if __name__ == "__main__":
             return []
         return list(input_dict.values())
     
-    def _extract_input_value(self, input_dict: Dict[str, Any]) -> Any:
-        if not input_dict:
-            return None
-        values = list(input_dict.values())
-        return values[0] if values else None
+    def _extract_input_value(self, value: Any) -> Any:
+        if isinstance(value, dict):
+            values = list(value.values())
+            return values[0] if values else None
+        return value
     
     def _run_subprocess_sync(self, script: str, timeout: int) -> Dict[str, Any]:
         try:
@@ -147,18 +147,21 @@ if __name__ == "__main__":
             }
     
     def _create_test_cases_from_request(self, request: CompileRequest) -> List[TestCaseResult]:
-        test_cases = []
+        test_cases_results = []
         
-        for i, (input_data, output_data) in enumerate(zip(request.inputs, request.outputs)):
-            test_case = TestCaseResult(
-                input=input_data,
-                expectedOutput=output_data,
-                actualOutput={},
-                status="PENDING"
+        for i, test_case in enumerate(request.test_cases):
+            test_case_result = TestCaseResult(
+                inputData=test_case.input,
+                expectedOutput=test_case.output,
+                actualOutput=None,
+                status="PENDING",
+                errorMessage="",
+                executionTime=None
             )
-            test_cases.append(test_case)
+            test_cases_results.append(test_case_result)
         
-        return test_cases
+        return test_cases_results
+    
     
     def _process_execution_result(self, 
                                  test_case: TestCaseResult,
@@ -199,7 +202,7 @@ if __name__ == "__main__":
                 error_message = f"Ошибка сравнения: {str(e)}"
         
         return TestCaseResult(
-            input=test_case.input,
+            inputData=test_case.inputData,
             expectedOutput=test_case.expectedOutput,
             actualOutput={"value": actual_output} if not isinstance(actual_output, dict) else actual_output,
             status=status,
