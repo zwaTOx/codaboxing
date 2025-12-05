@@ -18,11 +18,12 @@ public class TestCaseListResponse {
     public static TestCaseListResponse createFailedResponse(List<Object[]> testCases) {
         List<TestCaseResult> results = testCases.stream()
             .map(tc -> TestCaseResult.builder()
-                .input(tc[0])  //kwargs
+                .inputData(tc[0])  //kwargs
                 .expectedOutput(tc[1])
                 .actualOutput(null)
                 .status("FAILED")
                 .errorMessage("Not executed")
+                .executionTime(null)
                 .build())
             .toList();
         
