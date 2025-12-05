@@ -21,6 +21,10 @@ public class TestCase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "problem_id")
+    private Problem problem;
+
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "input_data", nullable = false, columnDefinition = "jsonb")
     private Map<String, Object> input;
@@ -29,6 +33,6 @@ public class TestCase {
     @Column(name = "output_data", nullable = false, columnDefinition = "jsonb")
     private Object output;  
 
-    @Column(columnDefinition = "TEXT")
-    private String comment;
+    // @Column(columnDefinition = "TEXT")
+    // private String comment;
 }

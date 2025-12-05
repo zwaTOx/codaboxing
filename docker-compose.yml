@@ -24,6 +24,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - PYTHON_EXECUTOR_URL=http://python-compiler:8000/api/v1/compile
     networks:
       - app-network
 
