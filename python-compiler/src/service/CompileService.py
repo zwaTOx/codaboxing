@@ -69,7 +69,6 @@ if __name__ == "__main__":
                     result = TestCaseResult(
                         inputData=test_case.inputData,
                         expectedOutput=test_case.expectedOutput,
-                        actualOutput={"error": "timeout"},
                         status="ERROR",
                         errorMessage=f"Таймаут выполнения ({self.timeout} секунд)"
                     )
@@ -83,7 +82,6 @@ if __name__ == "__main__":
                 result = TestCaseResult(
                     inputData=test_case.inputData,
                     expectedOutput=test_case.expectedOutput,
-                    actualOutput={"error": "execution_failed"},
                     status="ERROR",
                     errorMessage=f"Ошибка запуска: {error_type if not error_msg else error_msg}"
                 )
@@ -110,13 +108,7 @@ if __name__ == "__main__":
         if not input_dict:
             return []
         return list(input_dict.values())
-    
-    def _extract_input_value(self, value: Any) -> Any:
-        if isinstance(value, dict):
-            values = list(value.values())
-            return values[0] if values else None
-        return value
-    
+
     def _run_subprocess_sync(self, script: str, timeout: int) -> Dict[str, Any]:
         try:
             completed_process = subprocess.run(
@@ -153,10 +145,7 @@ if __name__ == "__main__":
             test_case_result = TestCaseResult(
                 inputData=test_case.input,
                 expectedOutput=test_case.output,
-                actualOutput=None,
                 status="PENDING",
-                errorMessage="",
-                executionTime=None
             )
             test_cases_results.append(test_case_result)
         
@@ -190,7 +179,7 @@ if __name__ == "__main__":
             error_message = stderr_str or f"Процесс завершился с кодом {return_code}"
         else:
             try:
-                expected_value = self._extract_input_value(test_case.expectedOutput)                
+                expected_value = test_case.expectedOutput                
                 if str(expected_value) == str(actual_output):
                     status = "PASSED"
                     error_message = None
@@ -204,7 +193,7 @@ if __name__ == "__main__":
         return TestCaseResult(
             inputData=test_case.inputData,
             expectedOutput=test_case.expectedOutput,
-            actualOutput={"value": actual_output} if not isinstance(actual_output, dict) else actual_output,
+            actualOutput=actual_output if not isinstance(actual_output, dict) else actual_output,
             status=status,
             errorMessage=error_message,
             executionTime=execution_time
