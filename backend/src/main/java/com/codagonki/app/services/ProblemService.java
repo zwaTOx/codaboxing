@@ -1,8 +1,6 @@
 package com.codagonki.app.services;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -29,6 +27,7 @@ public class ProblemService{
     private final ProblemRepository problemRepository;
     private final DuelRepository duelRepository;
     private final DuelService duelService;
+    private final CodeExecutionService codeExecutionService;
 
     public List<ProblemResponse> getDuelProblems(Long duelId){
         List <Problem> problems = problemRepository.findByDuelId(duelId);
@@ -65,26 +64,27 @@ public class ProblemService{
         // Testing code in python
         // res = [output]
         // List<Map<String, Object>> results = new ArrayList<>();
+        List<TestCaseResult> testCaseResults = codeExecutionService.executePythonCode(problemId, code);
         
-        List<TestCaseResult> testCaseResults = new ArrayList<>();
-        TestCaseResult testCase1 = new TestCaseResult(
-            Map.of("n", 10),
-            16,
-            16,
-            "PASSED",
-            null
-        );
-        testCaseResults.add(testCase1);
+        // List<TestCaseResult> testCaseResults = new ArrayList<>();
+        // TestCaseResult testCase1 = new TestCaseResult(
+        //     Map.of("n", 10),
+        //     16,
+        //     16,
+        //     "PASSED",
+        //     null
+        // );
+        // testCaseResults.add(testCase1);
 
-        // Тест-кейс 2: ошибка выполнения
-        TestCaseResult testCase2 = new TestCaseResult(
-            Map.of("n", 0),
-            0,
-            null,
-            "ERROR",
-            "Division by Zero"
-        );
-        testCaseResults.add(testCase2);
+        // // Тест-кейс 2: ошибка выполнения
+        // TestCaseResult testCase2 = new TestCaseResult(
+        //     Map.of("n", 0),
+        //     0,
+        //     null,
+        //     "ERROR",
+        //     "Division by Zero"
+        // );
+        // testCaseResults.add(testCase2);
 
         long passedCount = testCaseResults.stream()
             .filter(result -> "PASSED".equals(result.getStatus()))
