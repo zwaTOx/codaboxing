@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, field_validator
 class TestCaseResult(BaseModel):
     inputData: Dict[str, Any]
     expectedOutput: Any
-    actualOutput: Any
+    actualOutput: Any = None
     status: str #'FAILED', 'PASSED', 'ERROR'
     errorMessage: Optional[str] = Field(default="")
     executionTime: Optional[float] = None

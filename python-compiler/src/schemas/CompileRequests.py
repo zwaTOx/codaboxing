@@ -9,5 +9,5 @@ class TestCase(BaseModel):
 class CompileRequest(BaseModel):
     code: str
     timeout: Optional[int] = Field(default=5)
-    max_length: Optional[int] = Field(default=1000)
+    max_length: Optional[int] = Field(default=200)
     test_cases: List[TestCase]
