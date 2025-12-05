@@ -11,7 +11,6 @@ from src.service.CompileService import CompileService
 router = APIRouter(prefix="/api/v1", tags=["compile"])
 
 @router.post('/compile',
-    status_code=status.HTTP_201_CREATED,
     response_model=List[TestCaseResult])
 async def compile_code(
     request: CompileRequest
