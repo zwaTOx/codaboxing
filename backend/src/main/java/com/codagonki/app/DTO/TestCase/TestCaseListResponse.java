@@ -18,7 +18,7 @@ public class TestCaseListResponse {
     public static TestCaseListResponse createFailedResponse(List<Object[]> testCases) {
         List<TestCaseResult> results = testCases.stream()
             .map(tc -> TestCaseResult.builder()
-                .inputData(tc[0])  //kwargs
+                .inputData(tc[0]) 
                 .expectedOutput(tc[1])
                 .actualOutput(null)
                 .status("FAILED")
@@ -34,7 +34,7 @@ public class TestCaseListResponse {
                 .passed(0)
                 .failed(results.size())
                 .errors(0)
-                .totalExecutionTime(0L)
+                .totalExecutionTime(null)
                 .build())
             .build();
     }

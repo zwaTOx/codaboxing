@@ -61,30 +61,12 @@ public class ProblemService{
             );
         }
         String code = submitRequest.getCode();
-        // Testing code in python
-        // res = [output]
-        // List<Map<String, Object>> results = new ArrayList<>();
-        List<TestCaseResult> testCaseResults = codeExecutionService.executePythonCode(problemId, code);
-        
-        // List<TestCaseResult> testCaseResults = new ArrayList<>();
-        // TestCaseResult testCase1 = new TestCaseResult(
-        //     Map.of("n", 10),
-        //     16,
-        //     16,
-        //     "PASSED",
-        //     null
-        // );
-        // testCaseResults.add(testCase1);
+        double startTime = System.currentTimeMillis();
 
-        // // Тест-кейс 2: ошибка выполнения
-        // TestCaseResult testCase2 = new TestCaseResult(
-        //     Map.of("n", 0),
-        //     0,
-        //     null,
-        //     "ERROR",
-        //     "Division by Zero"
-        // );
-        // testCaseResults.add(testCase2);
+        List<TestCaseResult> testCaseResults = codeExecutionService.executePythonCode(problemId, code);
+
+        double endTime = System.currentTimeMillis();
+        double executionTime = (endTime - startTime)/1000;
 
         long passedCount = testCaseResults.stream()
             .filter(result -> "PASSED".equals(result.getStatus()))
@@ -102,7 +84,7 @@ public class ProblemService{
         .passed((int) passedCount)
         .failed((int) failedCount)
         .errors((int) errorCount)
-        .totalExecutionTime(0L) 
+        .totalExecutionTime(executionTime) 
         .build();
 
         TestCaseListResponse response = TestCaseListResponse.builder()
