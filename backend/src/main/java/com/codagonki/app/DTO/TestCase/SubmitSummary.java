@@ -14,5 +14,11 @@ public class SubmitSummary {
     private Integer passed;
     private Integer failed;
     private Integer errors;
-    private Long totalExecutionTime;
+    private Double totalExecutionTime; 
+    
+    public Double getRoundedExecutionTime() {
+        if (totalExecutionTime == null) return null;
+        return Math.round(totalExecutionTime * 100.0) / 100.0;
+    }
+
 }

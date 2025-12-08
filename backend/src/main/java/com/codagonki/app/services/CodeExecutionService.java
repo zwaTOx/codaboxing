@@ -3,6 +3,7 @@ package com.codagonki.app.services;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.codagonki.app.DTO.TestCase.TestCaseResult;
@@ -49,13 +50,14 @@ public class CodeExecutionService {
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
                 return Arrays.asList(response.getBody());
             } else {
-                log.error("Failed to execute code: {}", response.getStatusCode());
-                throw new RuntimeException("Failed to execute Python code. Status: " + response.getStatusCode());
+                throw new RuntimeException("Failed to execute Python code.");
             }
             
+        } catch (HttpStatusCodeException e) {
+            throw e;
+            
         } catch (Exception e) {
-            log.error("Error executing Python code: {}", e.getMessage());
-            throw new RuntimeException("Error connecting to Python executor: " + e.getMessage());
+            throw new RuntimeException("Error executing Python code: " + e.getMessage(), e);
         }
     }
 }
