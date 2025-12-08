@@ -53,6 +53,7 @@ public class AuthService {
             .userId(savedUser.getId())
             .email(savedUser.getEmail())
             .role(savedUser.getRole())
+            .nickname(savedUser.getNickname())
             .build();
     }
     
