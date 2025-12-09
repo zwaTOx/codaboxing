@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubmitRequest {
+    private String funcName;
     private String code;
     @Builder.Default
     private String language = "Python";

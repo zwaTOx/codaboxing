@@ -27,13 +27,13 @@ public class CodeExecutionService {
     private final TestCaseService testCaseService;
     private final RestTemplate restTemplate;
     
-    public List<TestCaseResult> executePythonCode(Long problemId, String code) {
+    public List<TestCaseResult> executePythonCode(Long problemId, String code, String funcName) {
         List<Map<String, Object>> test_cases = testCaseService.getTestCasesAsMap(problemId);
         try {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("code", code);
             requestBody.put("test_cases", test_cases);
-            // requestBody.put("problem_id", problemId);
+            requestBody.put("func_name", funcName);
             
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

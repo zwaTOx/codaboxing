@@ -61,9 +61,10 @@ public class ProblemService{
             );
         }
         String code = submitRequest.getCode();
+        String funcName = submitRequest.getFuncName();
         double startTime = System.currentTimeMillis();
 
-        List<TestCaseResult> testCaseResults = codeExecutionService.executePythonCode(problemId, code);
+        List<TestCaseResult> testCaseResults = codeExecutionService.executePythonCode(problemId, code, funcName);
 
         double endTime = System.currentTimeMillis();
         double executionTime = (endTime - startTime)/1000;

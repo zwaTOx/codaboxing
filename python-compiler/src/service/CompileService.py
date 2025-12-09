@@ -13,7 +13,6 @@ class CompileService:
     def __init__(self, timeout: int = 5, python_path: str = "python"):
         self.timeout = timeout
         self.python_path = python_path
-        self.should_stop = False
     
     async def execute_python_code(
         self, 
@@ -22,6 +21,7 @@ class CompileService:
         test_cases = self._create_test_cases_from_request(compile_request)
         
         results = []
+        self.should_stop = False
         
         for test_case in test_cases:
             if self.should_stop:
@@ -97,7 +97,8 @@ if __name__ == "__main__":
                     inputData=test_case.inputData,
                     expectedOutput=test_case.expectedOutput,
                     status="ERROR",
-                    errorMessage=f"Ошибка запуска: {error_type if not error_msg else error_msg}"
+                    errorMessage=f"Ошибка запуска: {error_type}"
+                    # errorMessage=f"Ошибка запуска: {error_type if not error_msg else error_msg}"
                 )
                 results.append(result)
                 self.should_stop=True
