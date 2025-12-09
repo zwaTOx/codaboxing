@@ -7,6 +7,7 @@ class TestCase(BaseModel):
 
 
 class CompileRequest(BaseModel):
+    func_name: str = Field(default="execute")
     code: str
     timeout: Optional[int] = Field(default=5)
     max_length: Optional[int] = Field(default=200)
