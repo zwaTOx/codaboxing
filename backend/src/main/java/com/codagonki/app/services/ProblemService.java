@@ -75,6 +75,9 @@ public class ProblemService{
         long failedCount = testCaseResults.stream()
             .filter(result -> "FAILED".equals(result.getStatus()))
             .count();
+        long skippedCount = testCaseResults.stream()
+            .filter(result -> "SKIPPED".equals(result.getStatus()))
+            .count();
         long errorCount = testCaseResults.stream()
             .filter(result -> "ERROR".equals(result.getStatus()))
             .count();
@@ -84,6 +87,7 @@ public class ProblemService{
         .total(testCaseResults.size())
         .passed((int) passedCount)
         .failed((int) failedCount)
+        .skipped((int) skippedCount)
         .errors((int) errorCount)
         .totalExecutionTime(executionTime) 
         .build();

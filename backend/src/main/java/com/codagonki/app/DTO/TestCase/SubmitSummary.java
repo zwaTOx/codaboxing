@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class SubmitSummary {
     private Integer total;
     private Integer passed;
+    private Integer skipped;
     private Integer failed;
     private Integer errors;
     private Double totalExecutionTime; 
