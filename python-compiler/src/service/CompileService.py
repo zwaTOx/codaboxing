@@ -13,6 +13,7 @@ class CompileService:
     def __init__(self, timeout: int = 5, python_path: str = "python"):
         self.timeout = timeout
         self.python_path = python_path
+        self.should_stop = False
     
     async def execute_python_code(
         self, 
@@ -23,19 +24,27 @@ class CompileService:
         results = []
         
         for test_case in test_cases:
+            if self.should_stop:
+                results.append(TestCaseResult(
+                    inputData=test_case.inputData,
+                    expectedOutput=test_case.expectedOutput,
+                    actualOutput=None,
+                    status="SKIPPED",
+                    errorMessage="Пропущено из-за предыдущей ошибки",
+                    executionTime=0.0
+                ))
+                continue
             try:
                 input_value = self._extract_input_values(test_case.inputData)
                 
                 args_str = self._prepare_arguments_for_execute(input_value)
                 
-                full_script = f"""
+                full_script = f"""{compile_request.code}
 import sys
 import json
 
-{compile_request.code}
-
 def main():
-    result = execute({args_str})
+    result = {compile_request.func_name}({args_str})
     try:
         print(json.dumps({{"result": result}}))
     except (TypeError, ValueError):
@@ -47,11 +56,15 @@ if __name__ == "__main__":
                 start_time = time.time()
 
                 try:
-                    completed_process = await asyncio.to_thread(
-                        self._run_subprocess_sync,
-                        full_script,
-                        self.timeout
-                    )
+                    # completed_process = await asyncio.wait_for(
+                    #     asyncio.to_thread(
+                    #         self._run_subprocess_sync,
+                    #         full_script,
+                    #         self.timeout
+                    #     ),
+                    #     timeout = self.timeout
+                    # )
+                    completed_process = self._run_subprocess_sync(full_script, self.timeout)
                     
                     execution_time = time.time() - start_time
 
@@ -73,7 +86,8 @@ if __name__ == "__main__":
                         errorMessage=f"Таймаут выполнения ({self.timeout} секунд)"
                     )
                     results.append(result)
-                    
+                    self.should_stop=True
+                
             except Exception as e:
                 error_type = type(e).__name__
                 error_msg = str(e) if str(e) else "Неизвестная ошибка"
@@ -86,6 +100,7 @@ if __name__ == "__main__":
                     errorMessage=f"Ошибка запуска: {error_type if not error_msg else error_msg}"
                 )
                 results.append(result)
+                self.should_stop=True
         
         return results
     
@@ -126,17 +141,9 @@ if __name__ == "__main__":
                 "return_code": completed_process.returncode
             }
         except subprocess.TimeoutExpired:
-            return {
-                "stdout": "",
-                "stderr": f"Timeout expired after {timeout} seconds",
-                "return_code": -1
-            }
+            raise asyncio.TimeoutError(f"Таймаут выполнения ({timeout} секунд)")
         except Exception as e:
-            return {
-                "stdout": "",
-                "stderr": f"Subprocess error: {str(e)}",
-                "return_code": -1
-            }
+            raise RuntimeError(f"Ошибка выполнения: {str(e)}")
     
     def _create_test_cases_from_request(self, request: CompileRequest) -> List[TestCaseResult]:
         test_cases_results = []
