@@ -27,6 +27,7 @@ public class ProblemService{
     private final DuelRepository duelRepository;
     private final DuelService duelService;
     private final CodeExecutionService codeExecutionService;
+    private final DuelActionService duelActionService;
 
     public List<ProblemResponse> getDuelProblems(Long duelId){
         List <Problem> problems = problemRepository.findByDuelId(duelId);
@@ -68,6 +69,7 @@ public class ProblemService{
         double endTime = System.currentTimeMillis();
         double executionTime = (endTime - startTime)/1000;
 
+        long totalCount = testCaseResults.size();
         long passedCount = testCaseResults.stream()
             .filter(result -> "PASSED".equals(result.getStatus()))
             .count();
@@ -81,6 +83,9 @@ public class ProblemService{
             .filter(result -> "ERROR".equals(result.getStatus()))
             .count();
         
+        if (totalCount == passedCount){
+            duelActionService.playSolveAction(user, duelId, problemId);
+        }
 
         SubmitSummary summary = SubmitSummary.builder()
         .total(testCaseResults.size())
@@ -92,7 +97,7 @@ public class ProblemService{
         .build();
 
         if (testCaseResults.size() == passedCount){
-            
+
         }
 
         TestCaseListResponse response = TestCaseListResponse.builder()
