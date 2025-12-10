@@ -66,19 +66,19 @@ public class DuelService{
         Duel newDuel = Duel.builder()
                 .hostUserId(user.getId())
                 .status(Duel.DuelStatus.WAITING)
+                .problemCount(problemCount)
                 .createdAt(LocalDateTime.now())
                 .build();
-        problemGenerateService.generateRandomProblems(newDuel, problemCount);
         Duel savedDuel = duelRepository.save(newDuel);
         return DuelResponse.fromEntity(savedDuel);
     }
     
     public DuelResponse connectToDuel(User user) {
-        List<Duel> availableDuel = duelRepository.findWaitingDuels();
-        if (availableDuel.isEmpty()) {
+        List<Duel> availableDuels = duelRepository.findWaitingDuels();
+        if (availableDuels.isEmpty()) {
             throw new RuntimeException("Нет доступных для подключения дуэлей");
         }
-        Duel duelToConnect = availableDuel.get(0);
+        Duel duelToConnect = availableDuels.get(0);
         if (duelToConnect.getHostUserId().equals(user.getId())) {
             throw new RuntimeException("Нельзя подключиться к своей же дуэли");
         } 
@@ -86,6 +86,7 @@ public class DuelService{
         duelToConnect.setStatus(Duel.DuelStatus.ACTIVE);
         duelToConnect.setStartTime(LocalDateTime.now());
         Duel updatedDuel = duelRepository.save(duelToConnect);
+        problemGenerateService.generateRandomProblems(updatedDuel);
         return DuelResponse.fromEntity(updatedDuel);
     }
 

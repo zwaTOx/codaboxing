@@ -37,6 +37,9 @@ public class Duel {
     @Column(name = "start_time")
     private LocalDateTime startTime;
 
+    @Column(name = "problem_count")
+    private Integer problemCount;
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "duel_problems",

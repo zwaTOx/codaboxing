@@ -20,11 +20,11 @@ public class ProblemGenerateService {
     private final DuelRepository duelRepository;
 
     @Transactional
-    public boolean generateRandomProblems(Duel duel, int count) {
+    public boolean generateRandomProblems(Duel duel) {
         if (problemRepository.getProblemCount(duel.getId()) != 0){
             return false;
         }
-        List<Problem> problems = problemRepository.findRandomProblems(count);
+        List<Problem> problems = problemRepository.findRandomProblems(duel.getProblemCount());
         duel.getProblems().clear();
         duel.getProblems().addAll(problems);
         duelRepository.save(duel);
