@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.codagonki.app.DTO.Duel.DuelResponse;
 import com.codagonki.app.DTO.Duel.DuelsPaginationResponse;
 import com.codagonki.app.models.Duel;
+import com.codagonki.app.models.Problem;
 import com.codagonki.app.models.User;
 import com.codagonki.app.repositories.DuelRepository;
 
@@ -29,6 +30,7 @@ import java.time.LocalDateTime;
 public class DuelService{
     private final DuelRepository duelRepository;
     private final ProblemGenerateService problemGenerateService;
+    private final DuelActionService duelActionService;
     
     public boolean isUserParticipatingInDuel(Long userId, Long duelId) {
         return duelRepository.findById(duelId)
@@ -86,7 +88,8 @@ public class DuelService{
         duelToConnect.setStatus(Duel.DuelStatus.ACTIVE);
         duelToConnect.setStartTime(LocalDateTime.now());
         Duel updatedDuel = duelRepository.save(duelToConnect);
-        problemGenerateService.generateRandomProblems(updatedDuel);
+        List<Problem> problems = problemGenerateService.generateRandomProblems(updatedDuel);
+        duelActionService.setStartStatus(updatedDuel, problems);
         return DuelResponse.fromEntity(updatedDuel);
     }
 

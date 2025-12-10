@@ -16,7 +16,6 @@ import com.codagonki.app.models.Problem;
 import com.codagonki.app.models.User;
 import com.codagonki.app.repositories.DuelRepository;
 import com.codagonki.app.repositories.ProblemRepository;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -91,6 +90,10 @@ public class ProblemService{
         .errors((int) errorCount)
         .totalExecutionTime(executionTime) 
         .build();
+
+        if (testCaseResults.size() == passedCount){
+            
+        }
 
         TestCaseListResponse response = TestCaseListResponse.builder()
             .results(testCaseResults)

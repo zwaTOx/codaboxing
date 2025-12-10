@@ -2,7 +2,9 @@ package com.codagonki.app.services;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.codagonki.app.models.Duel;
 import com.codagonki.app.models.Problem;
@@ -20,14 +22,17 @@ public class ProblemGenerateService {
     private final DuelRepository duelRepository;
 
     @Transactional
-    public boolean generateRandomProblems(Duel duel) {
+    public List<Problem> generateRandomProblems(Duel duel) {
         if (problemRepository.getProblemCount(duel.getId()) != 0){
-            return false;
+            throw new ResponseStatusException(
+                HttpStatus.INTERNAL_SERVER_ERROR,  
+                "Невозможно подобрать проблемы для дуэли"
+            );
         }
         List<Problem> problems = problemRepository.findRandomProblems(duel.getProblemCount());
         duel.getProblems().clear();
         duel.getProblems().addAll(problems);
         duelRepository.save(duel);
-        return true;
+        return problems;
     }  
 }
