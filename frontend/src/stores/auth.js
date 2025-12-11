@@ -5,7 +5,7 @@ import { saveToCache } from "@/cache/cache";
 import { loadFromCache } from "@/cache/cache";
 import { authApi } from "@/api/auth";
 
-export const authStore = defineStore('auth', () => {
+export const useAuthStore = defineStore('auth', () => {
     const isAuth = ref(false);
     const isAuthenticated = computed(() => isAuth.value);
 

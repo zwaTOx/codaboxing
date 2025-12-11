@@ -10,6 +10,11 @@
                     <input id="email-field" v-model="form.email" type="text" placeholder="Email" required class="authPage__form--input" />
                 </div>
                 <div class="authPage__input-container"
+                @click="focus('username')">
+                    <div id="username-cover" class="authPage__input-cover">Username</div>
+                    <input id="username-field" v-model="form.nickname" type="text" placeholder="Username" required class="authPage__form--input" />
+                </div>
+                <div class="authPage__input-container"
                 @click="focus('password')">
                     <div id="password-cover" class="authPage__input-cover">Пароль</div>
                     <input id="password-field" v-model="form.password" type="password" placeholder="Пароль" required class="authPage__form--input" />
@@ -32,7 +37,7 @@ import CitingsComponent from '@/components/citingsComponent.vue';
 
 <script>
 import router from '@/router';
-import { authStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth'
 
 export default {
     name: 'register',
@@ -40,6 +45,7 @@ export default {
         return {
             form: {
                 email: '',
+                nickname: '',
                 password: '',
                 verifyPassword: ''
             }
@@ -50,7 +56,7 @@ export default {
             try {
                 const feedbackElement = document.querySelector('#feedback');
 
-                const response = await authStore().register(this.form)
+                const response = await useAuthStore().register(this.form)
                 if (response.success) {
                     feedbackElement.classList.remove('feedback-error');
                     feedbackElement.classList.add('feedback-success');

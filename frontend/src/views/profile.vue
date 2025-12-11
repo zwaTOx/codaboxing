@@ -138,7 +138,7 @@
 
 <script>
 import historyComponent from '@/components/historyComponent.vue';
-import { userStore } from '@/stores/user'
+import { useUserStore } from '@/stores/user'
 
 export default {
     components: { historyComponent },
@@ -197,7 +197,7 @@ export default {
         },
         async getProfile() {
             try {
-                const response = await userStore().getProfile()
+                const response = await useUserStore().getProfile()
                 if (response.success) {
                     console.log('Данные профиля получены',response.data)
                     this.stats = response.data;

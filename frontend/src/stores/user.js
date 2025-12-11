@@ -3,9 +3,9 @@ import router from '@/router'
 import { saveToCache } from "@/cache/cache";
 import { loadFromCache } from "@/cache/cache";
 import { userApi } from "@/api/user";
-import { authStore } from "./auth";
+import { useAuthStore } from "./auth";
 
-export const userStore = defineStore('user', () => {
+export const useUserStore = defineStore('user', () => {
     
     const getProfile = async () => {
         try {
@@ -14,7 +14,7 @@ export const userStore = defineStore('user', () => {
         } catch (error) {
             if (error.response.status === 401) {
                 console.log('ошибка авторизации, попытка обновления токена...')
-                const refresh = await authStore().refreshToken()
+                const refresh = await useAuthStore().refreshToken()
                 if (refresh.success) {
                     console.log('токен успешно обновлен')
                 }
