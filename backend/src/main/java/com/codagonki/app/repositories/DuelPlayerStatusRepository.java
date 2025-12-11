@@ -40,7 +40,7 @@ public interface DuelPlayerStatusRepository extends JpaRepository<DuelPlayerStat
     }
 
     @Transactional
-    default boolean update_status(Long userId, Long duelId, Long problemId, DuelPlayerStatus.SolveStatus status) {
+    default DuelPlayerStatus update_status(Long userId, Long duelId, Long problemId, DuelPlayerStatus.SolveStatus status) {
         Optional<DuelPlayerStatus> playerStatusOpt = findByDuelIdAndUserId(duelId, userId);
         if (!playerStatusOpt.isPresent()) {
             throw new RuntimeException("Игрок не найден в дуэли");
@@ -51,11 +51,11 @@ public interface DuelPlayerStatusRepository extends JpaRepository<DuelPlayerStat
         progress.put(problemId.toString(), status.name());
         playerStatus.setDuelProblemProgress(progress);
         save(playerStatus);
-        return true;
+        return playerStatus;
     }
     
     @Transactional
-    default boolean updateProblemStatus(Long userId, Long duelId, Long problemId, DuelPlayerStatus.SolveStatus status) {
+    default DuelPlayerStatus updateProblemStatus(Long userId, Long duelId, Long problemId, DuelPlayerStatus.SolveStatus status) {
         return update_status(userId, duelId, problemId, status);
     }
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -43,6 +44,17 @@ public class Problem {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Difficulty difficulty; // EASY, MEDIUM, HARD
+
+    @Column(name = "func_name")
+    @Builder.Default
+    private String funcName = "execute";
+    
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "input_data_types", columnDefinition = "jsonb")
+    private Map<String, Object> inputDataTypes;
+
+    @Column(name = "output_data_type")
+    private String outputDataType;
 
     // @Column(name = "time_limit_ms", nullable = false)
     // private Integer timeLimitMs; 

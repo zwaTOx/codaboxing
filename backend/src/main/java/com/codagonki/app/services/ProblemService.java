@@ -1,6 +1,7 @@
 package com.codagonki.app.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -54,17 +55,18 @@ public class ProblemService{
                 "Нет доступа к дуэли"
             );
         }
-        if (!problemRepository.existsProblemInDuel(duelId, problemId)){
+        Optional<Problem> problemOpt = problemRepository.findById(problemId);
+        if (problemOpt.isEmpty() || !problemRepository.existsProblemInDuel(duelId, problemId)) {
             throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND,  
                 "Проблема не найдена в дуэли"
             );
         }
+        Problem problem = problemOpt.get();
         String code = submitRequest.getCode();
-        String funcName = submitRequest.getFuncName();
         double startTime = System.currentTimeMillis();
 
-        List<TestCaseResult> testCaseResults = codeExecutionService.executePythonCode(problemId, code, funcName);
+        List<TestCaseResult> testCaseResults = codeExecutionService.executePythonCode(problemId, code, problem.getFuncName());
 
         double endTime = System.currentTimeMillis();
         double executionTime = (endTime - startTime)/1000;
@@ -85,6 +87,9 @@ public class ProblemService{
         
         if (totalCount == passedCount){
             duelActionService.playSolveAction(user, duelId, problemId);
+        } 
+        else {
+            duelActionService.playAttemptAction(user, duelId, problemId);
         }
 
         SubmitSummary summary = SubmitSummary.builder()
@@ -95,10 +100,6 @@ public class ProblemService{
         .errors((int) errorCount)
         .totalExecutionTime(executionTime) 
         .build();
-
-        if (testCaseResults.size() == passedCount){
-
-        }
 
         TestCaseListResponse response = TestCaseListResponse.builder()
             .results(testCaseResults)

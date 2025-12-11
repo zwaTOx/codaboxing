@@ -52,15 +52,8 @@ public class DuelController {
 
     @PostMapping("/connect")
     public ResponseEntity<DuelResponse> connectToDuel(@CurrentUser User user) {
-        try {
-            DuelResponse duelInfo = duelService.connectToDuel(user);
-            return ResponseEntity.ok(duelInfo);
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage()  
-            );
-        }
+        DuelResponse duelInfo = duelService.connectToDuel(user);
+        return ResponseEntity.ok(duelInfo);
     }
 
     @DeleteMapping("/{duel_id}/disconnect")

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -24,6 +25,9 @@ public class ProblemResponse {
     private Problem.Difficulty difficulty;
     @JsonProperty("hints")
     private List<HintResponse> hints;
+    private String funcName;
+    private String outputDataType;
+    private Map<String, Object> inputDataTypes;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -36,5 +40,8 @@ public class ProblemResponse {
         this.createdAt = problem.getCreatedAt();
         this.updatedAt = problem.getUpdatedAt();
         this.hints = problem.getHints();
+        this.inputDataTypes = problem.getInputDataTypes();
+        this.outputDataType = problem.getOutputDataType();
+        this.funcName = problem.getFuncName();
     }
 }

@@ -78,11 +78,17 @@ public class DuelService{
     public DuelResponse connectToDuel(User user) {
         List<Duel> availableDuels = duelRepository.findWaitingDuels();
         if (availableDuels.isEmpty()) {
-            throw new RuntimeException("Нет доступных для подключения дуэлей");
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Нет доступных для подключения дуэлей"
+            );
         }
         Duel duelToConnect = availableDuels.get(0);
         if (duelToConnect.getHostUserId().equals(user.getId())) {
-            throw new RuntimeException("Нельзя подключиться к своей же дуэли");
+            throw new ResponseStatusException(
+                HttpStatus.CONFLICT,
+                "Нельзя подключиться к своей же дуэли"
+            );
         } 
         duelToConnect.setConnectingUserId(user.getId());
         duelToConnect.setStatus(Duel.DuelStatus.ACTIVE);
