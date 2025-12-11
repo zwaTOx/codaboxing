@@ -1,7 +1,7 @@
 .PageWrapper {
     justify-items: center;
     align-content: center;
-    height: calc(100vh - 68px);
+    height: calc(100vh - 60px);
 }
 
 .authPage {

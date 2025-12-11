@@ -7,10 +7,11 @@
                 </div>
                 <div class="header__logo--mode">{{ `${mode}` }}</div>
             </div>
-            <div class="header__profile">
+            <div v-if="isAuthenticated"
+            class="header__profile">
                 <div class="header__profile--icon icon">{{ initials }}</div>
                 <div class="header__profile--info">
-                    <div class="header__profile--info--name">Константин Денисов</div>
+                    <div class="header__profile--info--name">{{ userData.nickname }}</div>
                     <div class="header__profile--info--lvl">{{ `${lvl} уровень (${exp})` }}</div>
                 </div>
             </div>
@@ -19,43 +20,63 @@
     </header>
 </template>
 
-<script>
+<script setup>
 import router from '@/router';
-import { authStore } from '@/stores/auth';
-export default {
-    data() {
-        return {
-            mode: '',
-            lvl: 2,
-            exp: 240,
-            name: 'Константин Денисов',
-            initials: '',
-        }
-    },
-    computed: {
-        isAuthenticated() {
-            return authStore().isAuth
-        }
-    },
-    methods: {
-        getInitials() {
-            this.initials = this.name.split(' ').map(name => name[0]).join('')
-        },
-        toMainPage() {
-            if (this.isAuthenticated) {
-                this.$router.push('/main')
+import { computed, onMounted, ref } from 'vue';
+import { getInitials } from '@/composables/getInitials';
+
+import { useAuthStore } from '@/stores/auth';
+import { useUserStore } from '@/stores/user';
+
+// Stores
+const userStore = useUserStore();
+const authStore = useAuthStore();
+
+// Mock Data
+const mode = ref("BOXING");
+const lvl = ref(2);
+const exp = ref(240);
+const userData = ref({});
+
+// Computed
+const isAuthenticated = computed(() => authStore.isAuth);
+const initials = computed(() => {
+    return getInitials(userData.value.nickname || '');
+});
+
+// Methods
+const toMainPage = () => {
+    if (isAuthenticated) {
+        router.push('/main')
+    } else {
+        alert('user is not auth')
+    };
+};
+const logout = () => {
+    localStorage.clear()
+    authStore.initialize()
+    router.push('/login')
+
+    updateUserData();
+};
+const updateUserData = async () => {
+    if (!isAuthenticated) userData.value = {};
+    else {
+        try {
+            const response = await userStore.getProfile();
+            if (response.success) {
+                console.log('Данные профиля получены',response.data);
+                userData.value = response.data;
             } else {
-                alert('user is not auth')
+                console.log('Error fetching profile:', response.error);
             }
-        } ,
-        logout() {
-            localStorage.clear()
-            authStore().initialize()
-            this.$router.push('/login')
+        } catch (error) {
+            console.log('Error fetching profile:', error);
         }
-    },
-    mounted() {
-        this.getInitials()
     }
-}
+};
+
+onMounted(async () => {
+    updateUserData();
+});
 </script>
