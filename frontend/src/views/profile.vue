@@ -209,7 +209,7 @@ export default {
         await this.getProfile();
         this.profile.initials = getInitials(this.profile.nickname)
         for (let i = 0; i < this.history.length; i++) {
-            this.history[i].opponent_initials = this.getInitials(this.history[i].opponent)
+            this.history[i].opponent_initials = getInitials(this.history[i].opponent)
         }
         console.log(this.history)
     }

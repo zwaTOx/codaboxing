@@ -60,7 +60,7 @@ export default {
                 if (response.success) {
                     feedbackElement.classList.remove('feedback-error');
                     feedbackElement.classList.add('feedback-success');
-                    feedbackElement.innerHTML = `Привет, <b>${response.data.email}</b>! Теперь авторизуйся.`;
+                    feedbackElement.innerHTML = `Привет, <b>${response.data.nickname}</b>! Теперь авторизуйся.`;
                     console.log(response);
 
                     setTimeout(() => {
