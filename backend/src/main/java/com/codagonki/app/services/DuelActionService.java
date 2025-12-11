@@ -13,6 +13,7 @@ import com.codagonki.app.models.DuelPlayerStatus;
 import com.codagonki.app.models.Problem;
 import com.codagonki.app.models.User;
 import com.codagonki.app.repositories.DuelPlayerStatusRepository;
+import com.codagonki.app.repositories.DuelRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class DuelActionService {
     private final DuelPlayerStatusRepository duelPlayerStatusRepository;
-    // private final double
+    private final DuelRepository duelRepository;
 
     public boolean setStartStatus(Duel duel, List<Problem> problems){
         List<Long> problemIds = problems.stream()
@@ -47,7 +48,8 @@ public class DuelActionService {
                     DuelPlayerStatus.SolveStatus.SOLVED.name().equals(status)
                 );
             //WS sent
-            //game end
+            // game end
+            duelRepository.completeDuel(duelId);
             return is_player_win;
         } catch (RuntimeException e) {
             throw new ResponseStatusException(
