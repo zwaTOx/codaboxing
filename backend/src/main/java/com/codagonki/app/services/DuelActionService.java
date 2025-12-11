@@ -2,6 +2,7 @@ package com.codagonki.app.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class DuelActionService {
     private final DuelPlayerStatusRepository duelPlayerStatusRepository;
+    // private final double
 
     public boolean setStartStatus(Duel duel, List<Problem> problems){
         List<Long> problemIds = problems.stream()
@@ -36,9 +38,29 @@ public class DuelActionService {
         return true;
     }
 
-    public void playSolveAction(User user, Long duelId, Long problemId){
+    public boolean playSolveAction(User user, Long duelId, Long problemId){
         try{
-            duelPlayerStatusRepository.updateProblemStatus(user.getId(), duelId, problemId, DuelPlayerStatus.SolveStatus.SOLVED);
+            DuelPlayerStatus duelPlayerStatus = duelPlayerStatusRepository.updateProblemStatus(user.getId(), duelId, problemId, DuelPlayerStatus.SolveStatus.SOLVED);
+            Map<String, String> progress = duelPlayerStatus.getDuelProblemProgress();
+            boolean is_player_win = progress.values().stream()
+                .allMatch(status -> 
+                    DuelPlayerStatus.SolveStatus.SOLVED.name().equals(status)
+                );
+            //WS sent
+            //game end
+            return is_player_win;
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Не удалось обновить статус задачи: " + e.getMessage()
+            );
+        }
+
+    }
+
+    public void playAttemptAction(User user, Long duelId, Long problemId){
+        try{
+            DuelPlayerStatus duelPlayerStatus = duelPlayerStatusRepository.updateProblemStatus(user.getId(), duelId, problemId, DuelPlayerStatus.SolveStatus.ATTEMPTED);
         } catch (RuntimeException e) {
             throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
