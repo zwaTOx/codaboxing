@@ -47,9 +47,8 @@ public class DuelActionService {
                 .allMatch(status -> 
                     DuelPlayerStatus.SolveStatus.SOLVED.name().equals(status)
                 );
-            //WS sent
-            // game end
             duelRepository.completeDuel(duelId);
+            //WS sent
             return is_player_win;
         } catch (RuntimeException e) {
             throw new ResponseStatusException(

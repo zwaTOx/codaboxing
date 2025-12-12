@@ -59,11 +59,17 @@ public class DuelService{
 
     public DuelResponse createDuel(User user, Integer problemCount) {
         if (duelRepository.hasActiveDuel(user.getId())) {
-            throw new RuntimeException("Пользователь уже находится в дуэли");
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,  
+                "Пользователь уже находится в дуэли"
+            );
         }
 
         if (duelRepository.hasWaitingDuel(user.getId())) {
-            throw new RuntimeException("Пользователь уже ждёт начала дуэли");
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,  
+                "Пользователь уже ждёт начала дуэли"
+            );
         }
         Duel newDuel = Duel.builder()
                 .hostUserId(user.getId())
@@ -101,11 +107,17 @@ public class DuelService{
 
     public void disconnectFromDuel(Long duelId, User user) {
         Duel duel = duelRepository.findById(duelId)
-            .orElseThrow(() -> new RuntimeException("Дуэль не найдена"));
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,  
+                "Дуэль не найдена"
+            ));
         
         if (!duel.getHostUserId().equals(user.getId()) && 
             !user.getId().equals(duel.getConnectingUserId())) {
-            throw new RuntimeException("Пользователь не участвует в этой дуэли");
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,  
+                "Пользователь не участвует в этой дуэли"
+            );
         }
 
         if (duel.getStatus() == Duel.DuelStatus.WAITING){
@@ -114,11 +126,18 @@ public class DuelService{
         }
         
         if (Arrays.asList(Duel.DuelStatus.CANCELLED, Duel.DuelStatus.COMPLETED).contains(duel.getStatus())) {
-            throw new RuntimeException("Дуэль уже завершена или отменена");
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,  
+                "Дуэль уже завершена или отменена"
+            );
         }
         
         if (duel.getStatus() != Duel.DuelStatus.ACTIVE) {
-            throw new RuntimeException("Нельзя отключиться из неактивной дуэли");
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,  
+                "Нельзя отключиться из неактивной дуэли"
+            );
+            
         }
         
         duel.setStatus(Duel.DuelStatus.CANCELLED);

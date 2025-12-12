@@ -1,13 +1,11 @@
 package com.codagonki.app.controllers.v1;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.codagonki.app.DTO.Duel.DuelResponse;
 import com.codagonki.app.DTO.Duel.DuelsPaginationResponse;
@@ -39,15 +37,8 @@ public class DuelController {
     public ResponseEntity<DuelResponse> createNewDuel(
             @CurrentUser User user,
             @RequestParam(defaultValue = "3") Integer problemCount) {
-        try {
-            DuelResponse duelInfo = duelService.createDuel(user, problemCount);
-            return ResponseEntity.ok(duelInfo);
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage()  
-            );
-        }
+        DuelResponse duelInfo = duelService.createDuel(user, problemCount);
+        return ResponseEntity.ok(duelInfo);
     }
 
     @PostMapping("/connect")
@@ -60,15 +51,8 @@ public class DuelController {
     public ResponseEntity<Void> disconnectFromDuel(
             @PathVariable("duel_id") Long duelId,
             @CurrentUser User user) {
-        try {
-            duelService.disconnectFromDuel(duelId, user);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage()  
-            );
-        }
+        duelService.disconnectFromDuel(duelId, user);
+        return ResponseEntity.noContent().build();
     }
 
 }
