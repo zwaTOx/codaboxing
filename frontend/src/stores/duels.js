@@ -3,6 +3,23 @@ import { duelsApi } from "@/api/duels";
 
 export const useDuelStore = defineStore('duels', () => {
 
+    const getProblems = async (duelId) => {
+        try {
+            const response = await duelsApi.getProblems(duelId)
+        } catch (error) {
+            
+        }
+    }
+
+    const submitSolution = async (duelId, problemId, body) => {
+        try {
+            const response = await duelsApi.submitSolution(duelId, problemId, body);
+            console.log(response.json());
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const connectDuel = async () => {
         try {
             const response = await duelsApi.connectDuel()
@@ -45,6 +62,8 @@ export const useDuelStore = defineStore('duels', () => {
     return {
         connectDuel,
         createDuel,
-        disconnect
+        disconnect,
+
+        submitSolution,
     }
 })

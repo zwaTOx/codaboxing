@@ -1,11 +1,16 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
 
+#app {
+  font-family: "Inter", sans-serif;
+}
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Inter", sans-serif;
   color: #fff;
   user-select: none;
 
@@ -58,6 +63,8 @@ button {
 
   transform: scale(12, 12);
   background-color: var(--white);
+
+  transition: 5s all;
 }
 
 .blue-ball {
@@ -74,4 +81,12 @@ button {
 
   transform: scale(10, 10);
   background-color: var(--white);
+
+  transition: 5s all;
+}
+
+
+.yellow-ball:hover, .blue-ball:hover {
+  transform: scale(20, 20);
+  transition: 2s all;
 }

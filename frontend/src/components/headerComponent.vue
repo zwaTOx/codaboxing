@@ -9,7 +9,7 @@
             </div>
             <div v-if="isAuthenticated"
             class="header__profile">
-                <div class="header__profile--icon icon">{{ initials }}</div>
+                <div class="header__profile--icon icon" @click="toProfile">{{ initials }}</div>
                 <div class="header__profile--info">
                     <div class="header__profile--info--name">{{ userData.nickname }}</div>
                     <div class="header__profile--info--lvl">{{ `${lvl} уровень (${exp})` }}</div>
@@ -33,7 +33,7 @@ const userStore = useUserStore();
 const authStore = useAuthStore();
 
 // Mock Data
-const mode = ref("BOXING");
+const mode = ref("boxing");
 const lvl = ref(2);
 const exp = ref(240);
 const userData = ref({});
@@ -48,6 +48,13 @@ const initials = computed(() => {
 const toMainPage = () => {
     if (isAuthenticated) {
         router.push('/main')
+    } else {
+        alert('user is not auth')
+    };
+};
+const toProfile = () => {
+    if (isAuthenticated) {
+        router.push('/me')
     } else {
         alert('user is not auth')
     };

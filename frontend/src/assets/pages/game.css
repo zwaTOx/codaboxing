@@ -1,85 +1,204 @@
-.game-wrapper {
+.game__wrapper {
+    font-family: "Geist";
     padding: 12px;
+    box-sizing: border-box;
 }
-.game-container {
+
+.game__container {
     display: flex;
     gap: 12px;
 
     position: relative;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 25%);
     border-radius: 20px;
     
-    height: calc(100vh - 92px);
+    height: calc(100vh - 116px);
 }
 
-.task-heading {
+.game__problem-header {
     display: flex;
+    gap: 16px;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 24px;
+    width: 100%;
+    text-wrap-mode: nowrap;
 }
-.task-heading-text, .task-difficulty {
+.game__problem-heading-text {
+    font-size: 24px;
     color: var(--black);
+    box-sizing: border-box;
+    font-weight: 600;
 }
 
-.task-difficulty {
+.game__problem-difficulty {
     padding: 6px;
-    background-color: var(--green);
-    color: var(--white);
+    color: var(--green);
     font-weight: 600;
     border-radius: 20px;
     align-content: center;
+
+    box-sizing: border-box;
 }
 
-.task-description, .task-description h3 {
+.game__problem-description {
     color: var(--black);
+    margin-bottom: 12px;
 }
 
-.task-container, .result-container, .animation-container {
+.game__problem-container, .game__result-container, .game__animation-container {
     padding: 12px;
     width: 100%;
     height: 100%;
     background-color: var(--white);
     border-radius: 20px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 25%);
 }
 
-.double-container {
+.game__problem-container {
+    padding: 12px 16px;
+}
+.game__heading-text {
+    font-size: 16px;
+    color: var(--black);
+    box-sizing: border-box;
+    font-weight: 600;
+}
+
+.game__result-container, .game__animation-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.game__results {
+    background-color: var(--dark);
+    border-radius: 20px;
+    box-sizing: border-box;
+    height: 100%;
+
+    padding: 10px;
+}
+
+.game__animation-container {
+    width: fit-content;
+}
+
+.game__double-container {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    width: 100%;
+
+    box-sizing: content-box;
 }
 
-.code-container {
+.game__code-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
     width: 100%;
+    height: 100%;
     padding: 12px;
     
     background-color: white;
     border-radius: 20px;
+    
+    box-sizing: border-box;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 25%);
 }
 
-.code-container .code-input {
-    height: 98%;
+.game__code-input {
+    font-family: 'Fira Code';
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
     box-sizing: border-box;
 }
 
+.game__code-input textarea {
+    color: var(--black);
+}
+
 .quit-button {
+    font-family: "Geist";
+
     cursor: pointer;
     border: none;
     outline: none;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 25%);
 
     border-radius: 20px;
-    padding: 10px;
+    padding: 6px;
     font-weight: 600;
+    width: 100%;
 
     color: var(--white);
+    border: 2px solid transparent;
     background-color: var(--red);
 
     transition: 0.1s all;
 }
 
-.quit-button:hover {
-    transform: translateY(10px);
+.send-button {
+    cursor: pointer;
+    border: none;
+    outline: none;
 
-    transition: 0.3s all;
+    border-radius: 20px;
+    padding: 6px;
+    font-family: "Geist";
+    font-weight: 600;
+    width: 100%;
+
+    color: var(--white);
+    border: 2px solid transparent;
+    background-color: var(--blue);
+
+    transition: 0.1s all; 
+}
+
+.send-button:hover {
+    background-color: var(--yellow);
+    color: var(--blue);
+    border: 2px solid var(--blue);
+    font-weight: 700;
+
+    transform: translateY(-2px);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 10%);
+
+    box-shadow: var();
+}
+
+.quit-button:hover {
+    background-color: var(--white);
+    color: var(--red);
+    border: 2px solid var(--red);
+
+    transform: translateY(-2px);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 10%);
+
+    box-shadow: var();
+}
+
+.game__problem-example {
+    color: var(--dark);
+
+    .title {
+        color: var(--dark);
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+}
+
+.game__problem-example-block {
+    color: var(--dark);
+
+    padding-left: 24px;
+    border-left: 2px solid var(--gray);
+
+    .strong {
+        color: var(--dark);
+        font-weight: 700;
+    }
 }
