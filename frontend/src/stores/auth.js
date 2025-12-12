@@ -7,11 +7,7 @@ import { authApi } from "@/api/auth";
 
 export const useAuthStore = defineStore('auth', () => {
     const isAuth = ref(false);
-    const isAuthenticated = computed(() => {
-        // if (!isAuth && loadFromCache('token')) 
-        //     await useAuthStore().refreshToken()
-        isAuth.value
-    });
+    const isAuthenticated = computed(() => isAuth.value);
 
     const login = async (userData) => {
         try {
