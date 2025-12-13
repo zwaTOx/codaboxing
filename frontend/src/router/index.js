@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { authStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth'
 import profile from '@/views/profile.vue'
 import mainPage from '@/views/mainPage.vue'
 
@@ -20,8 +20,8 @@ const router = createRouter({
       }
     },
     {
-      path: '/profile',
-      name: 'profile',
+      path: '/me',
+      name: 'me',
       component: profile,
       meta: {
         requiresAuth: true,
@@ -76,7 +76,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {  
-  const store = authStore();
+  const store = useAuthStore();
   const isAuthenticated = store.isAuth
 
   console.log('Роутер', store.isAuth)
@@ -102,7 +102,7 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach((to, from) => {
-  const store = authStore();
+  const store = useAuthStore();
   const isAuthenticated = store.isAuth;
 
   console.log(to.meta, isAuthenticated)

@@ -6,18 +6,18 @@
             </div>
             <div class="profile__descr--info">
                 <div class="profile__descr--info--name">
-                    {{ profile.name }}
+                    {{ profile.nickname }}
                 </div>
                 <div class="profile__descr--info--lvl">
                     <div class="profile__descr--info--lvl--text">
-                        УР {{ profile.lvl }}
+                        УР {{ mock_data.lvl }}
                     </div>
                     <div class="profile__descr--info--lvl--bar">
-                        <div class="profile__descr--info--lvl--bar--currentbar" :style="{width: `calc(${profile.progress*100/profile.next_lvl}%)`}">
+                        <div class="profile__descr--info--lvl--bar--currentbar" :style="{width: `calc(${mock_data.progress*100/mock_data.next_lvl}%)`}">
                             
                         </div>
                         <div class="currentbar__text">
-                            {{ profile.progress }} / {{ profile.next_lvl }}
+                            {{ mock_data.progress }} / {{ mock_data.next_lvl }}
                         </div>
                     </div>
                 </div>
@@ -34,12 +34,12 @@
                         БОКС
                     </div>
                     <div class="stats_card__value">
-                        {{ stats.totalGames }}
+                        {{ profile.totalGames }}
                     </div>
                     <!-- <div class="stats_card__info">
                         <div class="stats_card__info--side" :style="{width: `calc(100%/${count_stats})`}">
                             <div class="stats_card__info--side--value" >
-                                {{ stats. }}
+                                {{ profile. }}
                             </div>
                             <div class="stats_card__info--side--sign">
                                 KOs
@@ -63,12 +63,12 @@
                         РЕЙТИНГ
                     </div>
                     <div class="stats_card__value">
-                        {{ stats.rating }}
+                        {{ profile.rating }}
                     </div>
                     <div class="stats_card__info">
                         <div class="stats_card__info--side" :style="{width: `calc(100%/${1})`}">
                             <div class="stats_card__info--side--value">
-                                {{ stats.maxRating }}
+                                {{ profile.maxRating }}
                             </div>
                             <div class="stats_card__info--side--sign">
                                 ВЫСШИЙ
@@ -84,12 +84,12 @@
                         ПРОЦЕНТ ПОБЕД
                     </div>
                     <div class="stats_card__value">
-                        {{ stats.winRate }}
+                        {{ profile.winRate }}
                     </div>
                     <div class="stats_card__info">
                         <div class="stats_card__info--side" :style="{width: `calc(100%/${count_stats})`}">
                             <div class="stats_card__info--side--value">
-                                {{ stats.wins }}
+                                {{ profile.wins }}
                             </div>
                             <div class="stats_card__info--side--sign">
                                 ПОБЕД
@@ -97,7 +97,7 @@
                         </div>
                         <div class="stats_card__info--side" :style="{width: `calc(100%/${count_stats})`}">
                             <div class="stats_card__info--side--value">
-                                {{ stats.losses }}
+                                {{ profile.losses }}
                             </div>
                             <div class="stats_card__info--side--sign">
                                 ПОРАЖЕНИЯ
@@ -113,12 +113,12 @@
                         СЕРИЯ ПОБЕД
                     </div>
                     <div class="stats_card__value">
-                        {{ stats.currentWinStreak }}
+                        {{ profile.currentWinStreak }}
                     </div>
                     <div class="stats_card__info">
                         <div class="stats_card__info--side" :style="{width: `calc(100%/${1})`}">
                             <div class="stats_card__info--side--value">
-                                {{ stats.maxWinStreak }}
+                                {{ profile.maxWinStreak }}
                             </div>
                             <div class="stats_card__info--side--sign">
                                 ЛУЧШАЯ СЕРИЯ
@@ -138,7 +138,8 @@
 
 <script>
 import historyComponent from '@/components/historyComponent.vue';
-import { userStore } from '@/stores/user'
+import { getInitials } from '@/composables/getInitials';
+import { useUserStore } from '@/stores/user'
 
 export default {
     components: { historyComponent },
@@ -155,14 +156,12 @@ export default {
             // procent_win: 33.3,
 
             count_stats: 2,
-            profile: {
-                initials: "",
-                name: 'Константин Денисов',
+            mock_data: {
                 lvl: 2,
                 progress: 24,
                 next_lvl: 150,
             },
-            stats: { },
+            profile: { },
             history: [
                 {
                     id: 1,
@@ -192,15 +191,12 @@ export default {
         }
     },
     methods: {
-        getInitials(value) {
-            return value.split(' ').map(name => name[0]).join('')
-        },
         async getProfile() {
             try {
-                const response = await userStore().getProfile()
+                const response = await useUserStore().getProfile()
                 if (response.success) {
                     console.log('Данные профиля получены',response.data)
-                    this.stats = response.data;
+                    this.profile = response.data;
                 } else {
                     console.log('Error fetching profile:', response.error)
                 }
@@ -210,10 +206,10 @@ export default {
         },
     },
     async mounted() {
-        await this.getProfile()
-        this.profile.initials = this.getInitials(this.profile.name)
+        await this.getProfile();
+        this.profile.initials = getInitials(this.profile.nickname)
         for (let i = 0; i < this.history.length; i++) {
-            this.history[i].opponent_initials = this.getInitials(this.history[i].opponent)
+            this.history[i].opponent_initials = getInitials(this.history[i].opponent)
         }
         console.log(this.history)
     }

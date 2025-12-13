@@ -28,7 +28,7 @@ import CitingsComponent from '@/components/citingsComponent.vue';
 </script>
 
 <script>
-import { authStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth'
 
 export default {
     data() {
@@ -45,7 +45,7 @@ export default {
                 email: this.email,
                 password: this.password
             }
-            const auth = authStore()
+            const auth = useAuthStore()
             const response = await auth.login(userData)
             if (response.success) {
                 console.log('Cookies after login:', document.cookie)
@@ -55,7 +55,7 @@ export default {
 
                 setTimeout(() => {
                     console.log('Cookies after login:', document.cookie)
-                    this.$router.push('/profile')
+                    this.$router.push('/me')
                 }, 2000);
                 
             } else {

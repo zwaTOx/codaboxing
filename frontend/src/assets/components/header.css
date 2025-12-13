@@ -1,10 +1,14 @@
 .headerWrapper {
-    padding: 10px 0;
+    padding: 10px 32px;
     z-index: 10;
     position: sticky;
     top: 0;
     background: var(--dark);
     color: #000;
+
+    @media screen and (max-width: 1024px) {
+        font-size: 14px;
+    }
 }
 .header {
     max-width: 1344px;
@@ -14,6 +18,9 @@
     align-items: center;
 }
 .header__logo {
+    display: flex;
+    gap: 4px;
+
     background-color: white;
     padding: 10px;
     display: flex;
@@ -33,6 +40,8 @@
     display: flex;
     gap: 8px;
     font-weight: bold;
+
+    align-items: center;
 }
 .header__profile--icon {
     background-color: var(--white);
@@ -46,10 +55,21 @@
     color: #000;
     font-size: 20px;
 }
+
 .header__profile--info--name {
     color: var(--white);
     font-size: 20px;
+
+    @media screen and (max-width: 1024px) {
+        font-size: 16px;
+    }
 }
 .header__profile--info--lvl {
     color: #8e8e8e;
+}
+
+.header__logo--mode {
+    color: var(--dark);
+    font-style: italic;
+    font-weight: 400;
 }
