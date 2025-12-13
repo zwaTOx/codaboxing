@@ -14,3 +14,7 @@ export function loadFromCache(key, maxAge) {
         return null;
     }
 }
+
+export const addCookie = (key, value) => {
+  document.cookie = key + "=" + value + ";path=/";
+}; 

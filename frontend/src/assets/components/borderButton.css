@@ -16,4 +16,8 @@
         transition: all 0.1s;
         cursor: pointer;
     }
+
+    @media screen and (max-width: 1024px) {
+        font-size: 14px;
+    }
 }

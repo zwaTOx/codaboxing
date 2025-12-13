@@ -65,6 +65,10 @@ button {
   background-color: var(--white);
 
   transition: 5s all;
+
+  @media screen and (max-width: 1024px) {
+    transform: scale(7, 7);
+  }
 }
 
 .blue-ball {
@@ -83,6 +87,10 @@ button {
   background-color: var(--white);
 
   transition: 5s all;
+
+  @media screen and (max-width: 1024px) {
+    transform: scale(7, 7);
+  }
 }
 
 

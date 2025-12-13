@@ -14,6 +14,12 @@
 
     background: var(--dark);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+
+    @media screen and (max-width: 1024px) {
+        font-size: 14px;
+        margin: 32px;
+        max-width: 90vw;
+    }
 }
 
 .authPage__title {

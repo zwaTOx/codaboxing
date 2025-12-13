@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import router from '@/router'
 import { ref, computed } from "vue"
-import { saveToCache } from "@/cache/cache";
+import { saveToCache, addCookie } from "@/cache/cache";
 import { loadFromCache } from "@/cache/cache";
 import { authApi } from "@/api/auth";
 
@@ -14,7 +14,7 @@ export const useAuthStore = defineStore('auth', () => {
             const response = await authApi.login(userData)
             console.log('Login successful:', response.data);
             saveToCache('token', response.data.accessToken);
-            saveToCache('refresh_token', response.data.refreshToken);
+            // addCookie('refreshToken', response.data.refreshToken);
             saveToCache('is_auth', true);
             isAuth.value = true;
             return { success: true, data: response.data }
