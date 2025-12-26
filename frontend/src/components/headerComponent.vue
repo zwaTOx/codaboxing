@@ -3,7 +3,7 @@
         <div class="header">
             <div class="header__logo" @click="toMainPage">
                 <div class="header__logo--title" :class="{nomode: !mode}">
-                    {{ mode === '' ? 'Codegonks' : `CODE: ` }}
+                    {{ mode === '' ? 'CodeBoxing' : `CODE: ` }}
                 </div>
                 <div class="header__logo--mode">{{ `${mode}` }}</div>
             </div>

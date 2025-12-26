@@ -7,6 +7,7 @@ import App from './App.vue'
 import router from './router'
 import { useAuthStore } from '@/stores/auth'
 
+window.global = window;
 const app = createApp(App)
 
 app.use(createPinia())

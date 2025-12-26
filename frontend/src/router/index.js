@@ -81,7 +81,7 @@ router.beforeEach((to, from, next) => {
 
   console.log('Роутер', store.isAuth)
   if (to.meta.title) {
-    document.title = `${to.meta.title} | CodeGonks`
+    document.title = `${to.meta.title} | CodeBoxing`
   }
 
   if (to.meta.requiresAuth && !isAuthenticated) {

@@ -20,6 +20,7 @@ export const duelsApi = {
     disconnect: (duelId) => api.delete(`/v1/duels/${duelId}/disconnect`),
 
     // Managing Tasks
+    getDuel: (id) => api.get(`/v1/duels/${id}`),
     getProblems: (duelId) => api.get(`/v1/duels/${duelId}/problems`),
     submitSolution: (duelId, taskId, body) => api.post(`v1/duels/${duelId}/problems/${taskId}/submit`, body),
 }
