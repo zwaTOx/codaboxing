@@ -24,6 +24,16 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - PYTHON_EXECUTOR_URL=http://python-compiler:8000/api/v1/compile
+    networks:
+      - app-network
+
+  python-compiler:
+    build:
+      context: /python-compiler
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
     networks:
       - app-network
 
@@ -32,7 +42,9 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "80:3000"
+    environment:
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL}
     depends_on:
       - backend
     networks:
@@ -41,3 +53,7 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:  
+  # postgres_data:
+  redis_data:

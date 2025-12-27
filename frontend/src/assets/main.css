@@ -1,6 +1,13 @@
 @import './base.css';
 
+/* Pages */
 @import './pages/profile.css';
+@import './pages/loginPage.css';
+@import './pages/game.css';
 
+/* Components */
+@import './components/modal.css';
 @import './components/header.css';
 @import './components/historyCard.css';
+@import './components/borderButton.css';
+@import './components/citings.css';

@@ -1,14 +1,10 @@
 package com.codagonki.app.services;
 
-import com.codagonki.app.DTO.Auth.LoginRequest;
-import com.codagonki.app.DTO.Auth.SignupRequest;
-import com.codagonki.app.DTO.Auth.TokenResponse;
+import com.codagonki.app.DTO.User.UpdatePasswordRequest;
 import com.codagonki.app.DTO.User.UpdateProfileRequest;
 import com.codagonki.app.DTO.User.UserProfileResponse;
-import com.codagonki.app.DTO.User.UserResponse;
 import com.codagonki.app.models.User;
 import com.codagonki.app.repositories.UserRepository;
-import com.codagonki.app.utils.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,68 +22,9 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public UserResponse registerUser(SignupRequest signupRequest) {
-        if (!signupRequest.getPassword().equals(signupRequest.getVerifyPassword())) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, 
-                "Пароли не совпадают"
-            );
-        }
-        if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT, 
-                "Пользователь с таким email уже существует"
-            );
-        }
-        User user = User.builder()
-            .email(signupRequest.getEmail())
-            .hashedPassword(passwordEncoder.encode(signupRequest.getPassword()))
-            .nickname(signupRequest.getNickname())
-            .role("USER")
-            .build();
-        User savedUser = userRepository.save(user);
-        return UserResponse.builder()
-            .userId(savedUser.getId())
-            .email(savedUser.getEmail())
-            .role(savedUser.getRole())
-            .build();
-    }
-    
-    public TokenResponse authenticateUser(LoginRequest loginRequest) {
-        Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
-
-        if (userOptional.isEmpty()) {
-            throw new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED,
-                "Пользователь с таким email не существует"
-            );
-        }
-        User user = userOptional.get();
-        
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getHashedPassword())) {
-            throw new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED,
-                "Неверный пароль"
-            );
-        }
-        String access_token = jwtTokenProvider.generateAccessToken(user.getId(), user.getRole());
-        String refresh_token = jwtTokenProvider.generateRefreshToken(user.getId());
-        return TokenResponse.builder()
-            .accessToken(access_token)
-            .refreshToken(refresh_token)
-            .tokenType("Bearer")
-            .build();
-        }
-    
     public UserProfileResponse getUserInfo(User user) {
-        return UserProfileResponse.builder()
-                .email(user.getEmail())
-                .nickname(user.getNickname())
-                .role(user.getRole())
-                .rating(user.getRating())
-                .build();
+        return new UserProfileResponse(user);
     }
     
     public UserProfileResponse updateUserProfile(User user, UpdateProfileRequest updateRequest) {
@@ -103,6 +40,29 @@ public class UserService {
                 .role(updatedUser.getRole())
                 .rating(updatedUser.getRating())
                 .build();
+    }
+
+    public UserProfileResponse updateUserPassword(User user, UpdatePasswordRequest updateRequest){
+        if (!passwordEncoder.matches(updateRequest.getOldPassword(), user.getHashedPassword())){
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Неверный пароль"
+            );
+        }
+        if (passwordEncoder.matches(updateRequest.getNewPassword(), user.getHashedPassword())){
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Нельзя изменить пароль на старый"
+            );
+        }
+        user.setHashedPassword(passwordEncoder.encode(updateRequest.getNewPassword()));
+        User updatedUser = userRepository.save(user);
+        return UserProfileResponse.builder()
+            .email(updatedUser.getEmail())
+            .nickname(updatedUser.getNickname())
+            .role(updatedUser.getRole())
+            .rating(updatedUser.getRating())
+            .build();
     }
 
     public Optional<User> findByEmail(String email) {

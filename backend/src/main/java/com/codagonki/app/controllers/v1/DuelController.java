@@ -1,14 +1,13 @@
 package com.codagonki.app.controllers.v1;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.codagonki.app.DTO.Duel.DuelInfoResponse;
 import com.codagonki.app.DTO.Duel.DuelResponse;
 import com.codagonki.app.DTO.Duel.DuelsPaginationResponse;
 import com.codagonki.app.dependencies.CurrentUser;
@@ -34,46 +33,34 @@ public class DuelController {
         return duelService.getUserDuelsPage(user.getId(), page, size);
     }
     
+    @GetMapping("/{duel_id}")
+    public ResponseEntity<DuelInfoResponse> getUserDuelInfo(
+            @CurrentUser User user,
+            @PathVariable("duel_id") Long duelId) {
+        DuelInfoResponse duelInfo = duelService.getDuelInfo(user, duelId);
+        return ResponseEntity.ok(duelInfo);
+    }
 
     @PostMapping("")
-    public ResponseEntity<DuelResponse> createNewDuel(@CurrentUser User user) {
-        try {
-            DuelResponse duelInfo = duelService.createDuel(user);
-            return ResponseEntity.ok(duelInfo);
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage()  
-            );
-        }
+    public ResponseEntity<DuelResponse> createNewDuel(
+            @CurrentUser User user,
+            @RequestParam(defaultValue = "3") Integer problemCount) {
+        DuelResponse duelInfo = duelService.createDuel(user, problemCount);
+        return ResponseEntity.ok(duelInfo);
     }
 
     @PostMapping("/connect")
     public ResponseEntity<DuelResponse> connectToDuel(@CurrentUser User user) {
-        try {
-            DuelResponse duelInfo = duelService.connectToDuel(user);
-            return ResponseEntity.ok(duelInfo);
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage()  
-            );
-        }
+        DuelResponse duelInfo = duelService.connectToDuel(user);
+        return ResponseEntity.ok(duelInfo);
     }
 
     @DeleteMapping("/{duel_id}/disconnect")
     public ResponseEntity<Void> disconnectFromDuel(
             @PathVariable("duel_id") Long duelId,
             @CurrentUser User user) {
-        try {
-            duelService.disconnectFromDuel(duelId, user);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage()  
-            );
-        }
+        duelService.disconnectFromDuel(duelId, user);
+        return ResponseEntity.noContent().build();
     }
 
 }

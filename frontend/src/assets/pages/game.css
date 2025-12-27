@@ -1,0 +1,326 @@
+.game__wrapper {
+    font-family: "Geist";
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.game__container {
+    display: flex;
+    gap: 12px;
+
+    position: relative;
+    border-radius: 20px;
+    
+    height: calc(100vh - 116px);
+}
+
+.game__problem-header {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    width: 100%;
+    text-wrap-mode: nowrap;
+}
+.game__problem-heading-text {
+    font-size: 24px;
+    color: var(--black);
+    box-sizing: border-box;
+    font-weight: 600;
+}
+
+.game__problem-difficulty {
+    padding: 6px;
+    color: var(--black);
+    font-weight: 600;
+    border-radius: 20px;
+    align-content: center;
+
+    box-sizing: border-box;
+}
+
+.game__problem-description {
+    color: var(--black);
+    margin-bottom: 12px;
+}
+
+.game__problem-container, .game__result-container, .game__animation-container {
+    padding: 12px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--white);
+    border-radius: 20px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 25%);
+}
+
+.game__problem-container {
+    padding: 12px 16px;
+}
+.game__heading-text {
+    font-size: 16px;
+    color: var(--black);
+    box-sizing: border-box;
+    font-weight: 600;
+}
+
+.results {
+    display: flex;
+    .feedback-message {
+        margin-left: auto;
+        font-style: italic;
+        color: var(--dark);
+        font-weight: 400;
+        font-size: 14px;
+    }
+}
+
+.game__result-container, .game__animation-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.game__result-container {
+    overflow: auto;
+
+    .test-case-btns {
+        z-index: 1000;
+        padding: 8px;
+        padding-top: 0;
+        box-shadow: 0px 8px 12px 0px rgba(0, 0, 0, 25%);
+
+        display: flex;
+        box-sizing: border-box;
+        gap: 8px;
+    }
+    .test-case-btn {
+        font-family: "Geist";
+        width: 100%;
+        font-weight: 500;
+
+        text-align: center;
+        background-color: #333338;
+        padding: 10px;
+        border-radius: 12px;
+        transition: 0.2s all;
+    }
+
+    .test-case-btn:hover {
+        transition: 0.1s ease-in;
+    }
+
+    .title {
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .data-line {
+        margin: 6px 0;
+        background-color: #333338;
+        padding: 8px;
+        border-radius: 12px;
+    }
+
+    .test-case-content {
+        overflow-y: scroll;
+    }
+}
+
+.game__results {
+    
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--dark);
+    border-radius: 20px;
+    box-sizing: border-box;
+    height: 100%;
+
+    padding: 10px;
+}
+
+.game__animation-container {
+    width: fit-content;
+}
+
+.game__double-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+
+    box-sizing: content-box;
+}
+
+.game__code-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    width: 100%;
+    height: 40vh;
+    padding: 12px;
+    
+    background-color: white;
+    border-radius: 20px;
+    
+    box-sizing: border-box;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 25%);
+}
+
+.game__code-input {
+    font-family: 'Fira Code';
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.game__code-input textarea {
+    color: var(--black);
+}
+
+.quit-button {
+    font-family: "Geist";
+
+    cursor: pointer;
+    border: none;
+    outline: none;
+
+    border-radius: 20px;
+    padding: 6px;
+    font-weight: 600;
+    width: 100%;
+
+    color: var(--white);
+    border: 2px solid transparent;
+    background-color: var(--red);
+
+    transition: 0.1s all;
+}
+
+.send-button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+
+    border-radius: 20px;
+    padding: 6px;
+    font-family: "Geist";
+    font-weight: 600;
+    width: 100%;
+
+    color: var(--white);
+    border: 2px solid transparent;
+    background-color: var(--blue);
+
+    transition: 0.1s all; 
+}
+
+.send-button:hover {
+    background-color: var(--yellow);
+    color: var(--blue);
+    border: 2px solid var(--blue);
+    font-weight: 700;
+
+    transform: translateY(-2px);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 10%);
+
+    box-shadow: var();
+}
+
+.quit-button:hover {
+    background-color: var(--white);
+    color: var(--red);
+    border: 2px solid var(--red);
+
+    transform: translateY(-2px);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 10%);
+
+    box-shadow: var();
+}
+
+.game__problem-example {
+    color: var(--dark);
+
+    .title {
+        color: var(--dark);
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .variable-example {
+        color: var(--dark);
+        margin-left: 24px;
+
+        font-style: italic;
+    }
+}
+
+.game__problem-example-block {
+    color: var(--dark);
+
+    padding-left: 24px;
+    border-left: 2px solid var(--gray);
+
+    .strong {
+        color: var(--dark);
+        font-weight: 700;
+    }
+}
+
+.game-cover-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.game-cover-screen.active {
+    z-index: 200;
+}
+
+.result-title {
+    color: var(--dark);
+}
+
+.result-title.win {
+    font-family: "Inter";
+    font-size: 128px;
+    color: var(--green);
+
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    align-content: center;
+    font-weight: 600;
+
+    transition: 0.3s all ease-in;
+
+    z-index: 1000;
+    background-color: rgba(25, 167, 25, 15%);
+
+    transition: 0.3s all;
+}
+
+.result-title.lost {
+    font-family: "Inter";
+    font-size: 128px;
+    color: var(--red);
+
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    align-content: center;
+    font-weight: 600;
+
+    transition: 0.3s all ease-in;
+
+    z-index: 1000;
+    background-color: rgba(167, 25, 25, 0.15);
+
+    transition: 0.3s all;
+}

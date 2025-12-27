@@ -1,6 +1,8 @@
 package com.codagonki.app.models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,6 +36,18 @@ public class Duel {
     
     @Column(name = "start_time")
     private LocalDateTime startTime;
+
+    @Column(name = "problem_count")
+    private Integer problemCount;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+        name = "duel_problems",
+        joinColumns = @JoinColumn(name = "duel_id"),
+        inverseJoinColumns = @JoinColumn(name = "problem_id")
+    )
+    @Builder.Default
+    private List<Problem> problems = new ArrayList<>();
 
     public enum DuelStatus {
         WAITING,    
