@@ -74,7 +74,7 @@ public class JwtUtils {
 
     public void setTokenCookies(HttpServletResponse response, String refreshToken) {        
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setHttpOnly(false);
         refreshTokenCookie.setSecure(false);
         refreshTokenCookie.setPath("/"); 
         refreshTokenCookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(7)); 
@@ -84,7 +84,7 @@ public class JwtUtils {
 
     public void clearTokenCookies(HttpServletResponse response) {
         Cookie refreshTokenCookie = new Cookie("refreshToken", "");
-        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setHttpOnly(false);
         refreshTokenCookie.setSecure(false);
         refreshTokenCookie.setPath("/api/auth/refresh");
         refreshTokenCookie.setMaxAge(0); 
