@@ -4,9 +4,12 @@ import { userApi } from "@/api/user";
 import { useAuthStore } from "./auth";
 
 export const useUserStore = defineStore('user', () => {
+    const user = ref(null);
+
     const getProfile = async () => {
         try {
             const response = await userApi.profileInfo();
+            user.value = response.data;
             return { success: true, data: response.data };
         } catch (error) {
             if (error.response?.status === 401) {
@@ -22,6 +25,7 @@ export const useUserStore = defineStore('user', () => {
     };
 
     return {
+        user,
         getProfile
     };
 });

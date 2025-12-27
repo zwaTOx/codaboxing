@@ -279,22 +279,48 @@
     height: 100vh;
 }
 
-.active {
-    .result-title {
-        font-family: "Inter";
-        font-size: 128px;
-        color: var(--green);
+.game-cover-screen.active {
+    z-index: 200;
+}
 
-        width: 100vw;
-        height: 100vh;
-        text-align: center;
-        align-content: center;
-        font-weight: 600;
+.result-title {
+    color: var(--dark);
+}
 
-        transition: 0.3s all ease-in;
-    }
+.result-title.win {
+    font-family: "Inter";
+    font-size: 128px;
+    color: var(--green);
+
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    align-content: center;
+    font-weight: 600;
+
+    transition: 0.3s all ease-in;
+
     z-index: 1000;
     background-color: rgba(25, 167, 25, 15%);
+
+    transition: 0.3s all;
+}
+
+.result-title.lost {
+    font-family: "Inter";
+    font-size: 128px;
+    color: var(--red);
+
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    align-content: center;
+    font-weight: 600;
+
+    transition: 0.3s all ease-in;
+
+    z-index: 1000;
+    background-color: rgba(167, 25, 25, 0.15);
 
     transition: 0.3s all;
 }

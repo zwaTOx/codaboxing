@@ -1,12 +1,40 @@
 <template>
-    <div class="game-cover-screen">
-        <div class="result-title">ПОБЕДА !!!</div>
+    <div class="game-cover-screen"
+    :class="{ 'active': hasWon || hasLost }">
+        <div class="result-title"
+        :class="{ 
+            'won': hasWon,
+            'lost': hasLost,
+         }">{{ resultMessage }}</div>
     </div>
+    <transition name="notification-fade">
+        <div 
+            v-if="showNotification" 
+            class="opponent-notification"
+            :class="{
+                'attempt-notification': notificationType === 'ATTEMPT',
+                'solved-notification': notificationType === 'SOLVED'
+            }"
+        >
+            <div class="notification-icon">
+                <span v-if="notificationType === 'ATTEMPT'">💭</span>
+                <span v-else-if="notificationType === 'SOLVED'">⚡</span>
+            </div>
+            <div class="notification-content">
+                <div class="notification-title">
+                    {{ opponent?.nickname }}
+                    <span v-if="notificationType === 'ATTEMPT'"> отправил решение</span>
+                    <span v-else-if="notificationType === 'SOLVED'"> решил задачу!</span>
+                </div>
+                <div class="notification-message">{{ notificationMessage }}</div>
+            </div>
+        </div>
+    </transition>
     <div class="game__wrapper">
         <div class="game__container">
             <div class="game__problem-container">
                 <div class="game__problem-header">
-                    <div class="game__problem-heading-text">{{ currentProblemIndex + 1 }}. {{ currentProblem.title }}</div>
+                    <div class="game__problem-heading-text">{{ currentProblemIndex + 1 }}. {{ currentProblem?.title }}</div>
                     <div class="game__problem-difficulty"
                     :class="{
                         'easy': currentDifficulty === 'легко',
@@ -16,10 +44,10 @@
                     <button @click="onQuit" class="quit-button">Сдаться</button>
                 </div>
                 <div class="game__problem-description">
-                    {{ currentProblem.description }}
+                    {{ currentProblem?.description }}
                 </div>
                 <div class="game__problem-example"
-                v-for="(example, idx) in currentProblem.examples">
+                v-for="(example, idx) in currentProblem?.examples">
                     <div class="title">Пример {{ idx + 1 }}:</div>
                     <div class="game__problem-example-block">
                         <span class="strong">Входные данные:</span> 
@@ -108,7 +136,7 @@
                     </div>
                     <div class="profile__descr--info--lvl">
                         <div class="profile__descr--info--lvl--text">
-                            {{ opponent?.nickname }} (вы)
+                            {{ opponent?.nickname }}
                         </div>
                         <div class="profile__descr--info--lvl--bar">
                             <div class="profile__descr--info--lvl--bar--currentbar" :style="{width: `calc(${opponentsCurrentProblemIndex * 100 / problemAmount}%)`}">
@@ -172,6 +200,9 @@ const difficulties = {
 const gameEnded = ref(false);
 const stompClient = ref(null);
 const userId = getUserID();
+const hasWon = ref(false);
+const hasLost = ref(false);
+const resultMessage = ref('');
 
 // Loading state
 const isLoading = ref(false);
@@ -195,13 +226,14 @@ const areResultsEmpty = ref(true);
 
 // Duel
 const duel = ref(null);
+const lastMessage = ref(null);
 const me = computed(() => duel.value?.participants.filter(user => user.userId === userId)[0]);
 const opponent = computed(() => duel.value?.participants.filter(user => user.userId !== userId)[0]);
 const problemAmount = computed(() => duel.value?.problemCount);
 
 // Current Problem
 const currentDifficulty = computed(() => {
-    return difficulties[currentProblem.value.difficulty] || '';
+    return difficulties[currentProblem.value?.difficulty] || '';
 });
 const currentResult = ref("Тут будет выводится результат вашего сабмита =)");
 const testCases = ref(null);
@@ -211,20 +243,36 @@ const selectedTestCase = ref(null);
 // Watchers
 watch(currentProblemIndex, (newIndex) => {
     currentProblem.value = problems.value[newIndex];
+    if (newIndex == problemAmount.value) {
+        hasWon.value = true;
+        resultMessage.value = "ПОБЕДА !!!!!"
+        setTimeout(() => { router.push('/'); location.reload(); }, 3000);
+
+    }
+});
+watch(opponentsCurrentProblemIndex, (newIndex) => {
+    if (newIndex == problemAmount.value) {
+        hasLost.value = true;
+        resultMessage.value = "ТЫ ЖЕСТКО УМЕР!"
+        setTimeout(() => { router.push('/'); }, 3000);
+    }
 });
 
 watch(currentProblem, (newProblem) => {
-    let variables = "";
-    let length = Object.entries(newProblem.inputDataTypes).length;
-    let count = 0;
-    Object.entries(newProblem.inputDataTypes).forEach(([key, value]) => {
-        count += 1;
-        variables += `${key}: ${value}`;
-        if (count < length) variables += ', ';
-    });
-    codeInputBox.value.code = 
-`def ${newProblem.funcName}(${variables}) -> ${newProblem.outputDataType}:
+    console.log('new problem', newProblem);
+    if (newProblem) {
+        let variables = "";
+        let length = Object.entries(newProblem.inputDataTypes).length;
+        let count = 0;
+        Object.entries(newProblem.inputDataTypes).forEach(([key, value]) => {
+            count += 1;
+            variables += `${key}: ${value}`;
+            if (count < length) variables += ', ';
+        });
+        codeInputBox.value.code = 
+    `def ${newProblem.funcName}(${variables}) -> ${newProblem.outputDataType}:
     pass`;
+    }
 });
 
 // WTF
@@ -354,14 +402,65 @@ onMounted(async () => {
         onConnect: () => {
             const privateTopic = `/user/${userId}/queue/messages`;
             stompClient.value.subscribe(privateTopic, (message) => {
-                console.log('данные:', message.body);
+                lastMessage.value = message.body;
             });
         }
     });
+
+    stompClient.value.activate();
     
     console.log(problems.value);
     currentProblem.value = problems.value[currentProblemIndex.value];
 });
+
+// New
+const showNotification = ref(false);
+const notificationMessage = ref("");
+const notificationType = ref(""); // "ATTEMPT" или "SOLVED"
+
+// Methods для уведомлений
+const showTemporaryNotification = (type, content) => {
+    notificationType.value = type;
+    notificationMessage.value = content;
+    showNotification.value = true;
+    
+    // Автоматически скрыть через 3 секунды
+    setTimeout(() => {
+        showNotification.value = false;
+    }, 3000);
+};
+
+// Watcher для lastMessage
+watch(lastMessage, (newMessage) => {
+    try {
+        const parsedMessage = JSON.parse(newMessage);
+        console.log('novoe soobchenie', parsedMessage);
+        if (parsedMessage.type && parsedMessage.content) {
+            // Отображаем уведомление
+            showTemporaryNotification(parsedMessage.type, parsedMessage.content);
+            
+            // Если оппонент решил задачу, обновляем его прогресс
+            if (parsedMessage.type === "SOLVED") {
+                opponentsCurrentProblemIndex.value += 1;
+                
+                // Проигрываем анимацию атаки оппонента
+                if (!gameEnded.value) {
+                    showAction.value = true;
+                    animationSource.value = animations.enemyAttack;
+                }
+                
+                // Проверяем, не закончилась ли игра для оппонента
+                if (opponentsCurrentProblemIndex.value === problemAmount.value) {
+                    // Игра окончена - оппонент выиграл
+                    hasWon.value = false;
+                    gameEnded.value = true;
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Ошибка парсинга сообщения:", error);
+    }
+}, { deep: true });
 </script>
 
 <style>
@@ -560,6 +659,120 @@ onMounted(async () => {
     gap: 12px;
     background-color: var(--dark);
     padding: 12px;
+    border-radius: 12px;
+}
+
+.opponent-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(25, 25, 35, 0.95);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 350px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 2px solid transparent;
+    backdrop-filter: blur(10px);
+}
+
+.attempt-notification {
+    border-color: var(--yellow);
+    background: linear-gradient(135deg, rgba(25, 25, 35, 0.95), rgba(241, 196, 15, 0.1));
+}
+
+.solved-notification {
+    border-color: var(--green);
+    background: linear-gradient(135deg, rgba(25, 25, 35, 0.95), rgba(46, 204, 113, 0.1));
+    animation: solved-pulse 2s infinite;
+}
+
+.notification-icon {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.attempt-notification .notification-icon {
+    background: rgba(241, 196, 15, 0.2);
+    color: var(--yellow);
+}
+
+.solved-notification .notification-icon {
+    background: rgba(46, 204, 113, 0.2);
+    color: var(--green);
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: 700;
+    font-size: 0.9em;
+    color: white;
+    margin-bottom: 4px;
+}
+
+.attempt-notification .notification-title {
+    color: var(--yellow);
+}
+
+.solved-notification .notification-title {
+    color: var(--green);
+}
+
+.notification-message {
+    font-size: 0.85em;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.4;
+}
+
+/* Анимации для уведомлений */
+.notification-fade-enter-active,
+.notification-fade-leave-active {
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.notification-fade-enter-from {
+    opacity: 0;
+    transform: translateX(100px) scale(0.9);
+}
+
+.notification-fade-leave-to {
+    opacity: 0;
+    transform: translateX(100px) scale(0.9);
+}
+
+@keyframes solved-pulse {
+    0%, 100% {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 8px 32px rgba(46, 204, 113, 0.4);
+    }
+}
+
+/* Пульсация для уведомления о решении */
+@keyframes notification-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.solved-notification {
+    animation: notification-pulse 2s ease-in-out infinite;
 }
 
 /* Анимации */

@@ -4,7 +4,6 @@ import { ref, computed } from "vue"
 import { saveToCache, addCookie } from "@/cache/cache";
 import { loadFromCache } from "@/cache/cache";
 import { authApi } from "@/api/auth";
-import { useUserStore } from "./user";
 
 export const useAuthStore = defineStore('auth', () => {
     const isAuth = ref(false);
@@ -19,9 +18,6 @@ export const useAuthStore = defineStore('auth', () => {
             saveToCache('is_auth', true);
             isAuth.value = true;
 
-            const userStore = useUserStore();
-            await userStore.getProfile(); 
-            
             return { success: true, data: response.data }
         } catch (error) {
             // if (error.response.status === 401) {
