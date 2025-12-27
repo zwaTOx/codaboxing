@@ -10,6 +10,7 @@ export const useUserStore = defineStore('user', () => {
         try {
             const response = await userApi.profileInfo();
             user.value = response.data;
+            // console.log('user data', user.value.nickname)
             return { success: true, data: response.data };
         } catch (error) {
             if (error.response?.status === 401) {
@@ -22,10 +23,30 @@ export const useUserStore = defineStore('user', () => {
             }
             return { success: false, error: error };
         }
-    };
+    }
+
+    const changeUsername = async (newData) => {
+        try {
+            const response = await userApi.changeUsername(newData)
+            return { success: true, data: response.data }
+        } catch (error) {
+            return { success: false, error: error}
+        }
+    }
+
+    const changePassword = async (passwordData) => {
+        try {
+            const response = await userApi.changePassword(passwordData)
+            return { success: true, data: response.data }
+        } catch (error) {
+            return { success: false, error: error}
+        }
+    }
 
     return {
         user,
-        getProfile
+        getProfile,
+        changeUsername,
+        changePassword
     };
 });
