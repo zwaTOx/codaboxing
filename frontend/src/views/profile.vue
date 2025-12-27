@@ -196,7 +196,7 @@ export default {
                 next_lvl: 150,
             },
             profile: { },
-            history: [
+            history1: [
                 {
                     id: 1,
                     type: 'win',
@@ -222,6 +222,7 @@ export default {
                     progress: '-9',
                 }
             ],
+            history: [],
 
             nicknameStatus: false,
             passwordStatus: false
@@ -250,6 +251,7 @@ export default {
                     console.log('Данные профиля получены',response.data)
                     this.profile = response.data;
                     this.profile.initials = getInitials(this.profile.nickname)
+                    await this.getHistory();
                 } else {
                     console.log('Error fetching profile:', response.error)
                 }
@@ -257,12 +259,25 @@ export default {
                 console.log('Error fetching profile:', error)
             }
         },
+        async getHistory() {
+            try {
+                const response = await useUserStore().getHistory()
+                if (response.success) {
+                    console.log('История получена',response.data)
+                    this.history = response.data;
+                } else {
+                    console.log('Error fetching history:', response.error)
+                }
+            } catch (error) {
+                console.log('Error fetching history:', error)
+            }
+        }
     },
     async mounted() {
         await this.getProfile();
         this.profile.initials = getInitials(this.profile.nickname)
         for (let i = 0; i < this.history.length; i++) {
-            this.history[i].opponent_initials = getInitials(this.history[i].opponent)
+            this.history[i].opponent_initials = getInitials(this.history[i].opponent.nickname)
         }
         console.log(this.history)
     }

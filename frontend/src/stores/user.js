@@ -43,10 +43,20 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
+    const getHistory = async () => {
+        try {
+            const response = await userApi.getHistory()
+            return { success: true, data: response.data }
+        } catch (error) {
+            return { success: false, error: error}
+        }
+    }
+
     return {
         user,
         getProfile,
         changeUsername,
-        changePassword
+        changePassword,
+        getHistory
     };
 });
