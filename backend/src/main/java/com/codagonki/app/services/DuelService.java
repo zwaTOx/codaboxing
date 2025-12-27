@@ -1,5 +1,6 @@
 package com.codagonki.app.services;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,12 +13,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.codagonki.app.DTO.Duel.DuelInfoResponse;
 import com.codagonki.app.DTO.Duel.DuelResponse;
 import com.codagonki.app.DTO.Duel.DuelsPaginationResponse;
+import com.codagonki.app.DTO.User.UserResponse;
 import com.codagonki.app.models.Duel;
 import com.codagonki.app.models.Problem;
 import com.codagonki.app.models.User;
 import com.codagonki.app.repositories.DuelRepository;
+import com.codagonki.app.repositories.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +35,8 @@ public class DuelService{
     private final DuelRepository duelRepository;
     private final ProblemGenerateService problemGenerateService;
     private final DuelActionService duelActionService;
-    
+    private final UserRepository userRepository;
+
     public boolean isUserParticipatingInDuel(Long userId, Long duelId) {
         return duelRepository.findById(duelId)
             .map(duel -> userId.equals(duel.getHostUserId()) || 
@@ -40,6 +45,14 @@ public class DuelService{
                 HttpStatus.NOT_FOUND,  
                 "Дуэль не найдена"
             ));
+    }
+
+    public User getOpponent(Duel duel, User currentUser) {
+        if (duel.getConnectingUserId().equals(currentUser.getId())) {
+            return userRepository.findById(duel.getHostUserId()).get();
+        } else {
+            return userRepository.findById(duel.getConnectingUserId()).get();
+        }
     }
 
     public DuelsPaginationResponse getUserDuelsPage(Long userId, int page, int size) {
@@ -81,6 +94,43 @@ public class DuelService{
         return DuelResponse.fromEntity(savedDuel);
     }
     
+    public DuelInfoResponse getDuelInfo(User user, Long duelId){
+        Duel duel = duelRepository.findById(duelId)
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,  
+                "Дуэль не найдена"
+            ));
+        if (!duel.getHostUserId().equals(user.getId()) && 
+            !user.getId().equals(duel.getConnectingUserId())) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,  
+                "Пользователь не участвует в этой дуэли"
+            );
+        }
+
+        List<Long> participantIds = new ArrayList<>();
+        participantIds.add(duel.getHostUserId());
+        if (duel.getConnectingUserId() != null) {
+            participantIds.add(duel.getConnectingUserId());
+        }
+        
+        List<User> participants = userRepository.findAllById(participantIds);
+        
+        List<UserResponse> userResponses = participants.stream()
+            .map(UserResponse::new)
+            .collect(Collectors.toList());
+        
+        return new DuelInfoResponse(
+            duel.getId(),
+            userResponses,
+            duel.getStatus().name(),
+            duel.getCreatedAt(),
+            duel.getStartTime(),
+            duel.getProblemCount(),
+            user.getId()
+        );
+    }
+
     public DuelResponse connectToDuel(User user) {
         List<Duel> availableDuels = duelRepository.findWaitingDuels();
         if (availableDuels.isEmpty()) {

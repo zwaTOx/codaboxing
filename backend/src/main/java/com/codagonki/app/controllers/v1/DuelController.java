@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.codagonki.app.DTO.Duel.DuelInfoResponse;
 import com.codagonki.app.DTO.Duel.DuelResponse;
 import com.codagonki.app.DTO.Duel.DuelsPaginationResponse;
 import com.codagonki.app.dependencies.CurrentUser;
@@ -32,6 +33,13 @@ public class DuelController {
         return duelService.getUserDuelsPage(user.getId(), page, size);
     }
     
+    @GetMapping("/{duel_id}")
+    public ResponseEntity<DuelInfoResponse> getUserDuelInfo(
+            @CurrentUser User user,
+            @PathVariable("duel_id") Long duelId) {
+        DuelInfoResponse duelInfo = duelService.getDuelInfo(user, duelId);
+        return ResponseEntity.ok(duelInfo);
+    }
 
     @PostMapping("")
     public ResponseEntity<DuelResponse> createNewDuel(

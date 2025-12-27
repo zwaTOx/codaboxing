@@ -13,6 +13,7 @@ import com.codagonki.app.DTO.Problem.SubmitRequest;
 import com.codagonki.app.DTO.TestCase.SubmitSummary;
 import com.codagonki.app.DTO.TestCase.TestCaseListResponse;
 import com.codagonki.app.DTO.TestCase.TestCaseResult;
+import com.codagonki.app.models.Duel;
 import com.codagonki.app.models.Problem;
 import com.codagonki.app.models.User;
 import com.codagonki.app.repositories.DuelRepository;
@@ -29,6 +30,7 @@ public class ProblemService{
     private final DuelService duelService;
     private final CodeExecutionService codeExecutionService;
     private final DuelActionService duelActionService;
+    private final DuelResultService duelResultService;
 
     public List<ProblemResponse> getDuelProblems(Long duelId){
         List <Problem> problems = problemRepository.findByDuelId(duelId);
@@ -60,8 +62,10 @@ public class ProblemService{
             throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND,  
                 "Проблема не найдена в дуэли"
-            );
-        }
+                );
+            }
+        Optional<Duel> duelOpt = duelRepository.findById(duelId);
+        Duel duel = duelOpt.get();
         Problem problem = problemOpt.get();
         String code = submitRequest.getCode();
         double startTime = System.currentTimeMillis();
@@ -86,7 +90,14 @@ public class ProblemService{
             .count();
         
         if (totalCount == passedCount){
-            duelActionService.playSolveAction(user, duelId, problemId);
+            Boolean is_player_win = duelActionService.playSolveAction(user, duel, problemId);
+            if (is_player_win){
+                duelRepository.completeDuel(duel.getId());
+                Integer gainedRating = duelActionService.winAction(user);
+                User opponent = duelService.getOpponent(duel, user);
+                Integer lostRating = duelActionService.loseAction(opponent);
+                duelResultService.createDuelResults(user, opponent, duel, gainedRating, lostRating);
+            }
         } 
         else {
             duelActionService.playAttemptAction(user, duelId, problemId);
