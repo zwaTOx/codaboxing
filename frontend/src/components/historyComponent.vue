@@ -8,7 +8,7 @@
                 </div>
                 <div class="opponent__info">
                     <div class="opponent__info--name">{{ data.opponent.nickname }}</div>
-                    <div class="opponent__info--rating">{{ `${data.opponent_rank} (${data.rating})` }}</div>
+                    <div class="opponent__info--rating">{{ data.opponent.rating }}</div>
                 </div>
             </div>
         </div>

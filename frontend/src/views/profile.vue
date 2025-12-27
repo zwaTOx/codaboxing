@@ -264,7 +264,7 @@ export default {
                 const response = await useUserStore().getHistory()
                 if (response.success) {
                     console.log('История получена',response.data)
-                    this.history = response.data;
+                    this.history = response.data.reverse();
                 } else {
                     console.log('Error fetching history:', response.error)
                 }
