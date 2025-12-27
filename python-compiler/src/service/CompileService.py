@@ -112,6 +112,8 @@ if __name__ == "__main__":
         for arg in input_values:
             if arg is None:
                 args_list.append("None")
+            elif isinstance(arg, bool):
+                args_list.append("True" if arg else "False")
             else:
                 try:
                     args_list.append(json.dumps(arg))
@@ -187,8 +189,9 @@ if __name__ == "__main__":
             error_message = stderr_str or f"Процесс завершился с кодом {return_code}"
         else:
             try:
-                expected_value = test_case.expectedOutput                
-                if str(expected_value) == str(actual_output):
+                expected_value = test_case.expectedOutput 
+                print(type(expected_value), type(actual_output))                
+                if expected_value == actual_output:
                     status = "PASSED"
                     error_message = None
                 else:
