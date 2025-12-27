@@ -3,7 +3,7 @@
         <div class="header">
             <div class="header__logo" @click="toMainPage">
                 <div class="header__logo--title" :class="{nomode: !mode}">
-                    {{ mode === '' ? 'Codegonks' : `CODE: ` }}
+                    {{ mode === '' ? 'CodeBoxing' : `CODE: ` }}
                 </div>
                 <div class="header__logo--mode">{{ `${mode}` }}</div>
             </div>
@@ -11,7 +11,7 @@
             class="header__profile">
                 <div class="header__profile--icon icon" @click="toProfile">{{ initials }}</div>
                 <div class="header__profile--info">
-                    <div class="header__profile--info--name">{{ userData.nickname }}</div>
+                    <div class="header__profile--info--name">{{ userName }}</div>
                     <div class="header__profile--info--lvl">{{ `${lvl} уровень (${exp})` }}</div>
                 </div>
             </div>
@@ -33,15 +33,15 @@ const userStore = useUserStore();
 const authStore = useAuthStore();
 
 // Mock Data
+const userName = ref('');
 const mode = ref("boxing");
 const lvl = ref(2);
 const exp = ref(240);
-const userData = ref({});
 
 // Computed
 const isAuthenticated = computed(() => authStore.isAuth);
 const initials = computed(() => {
-    return getInitials(userData.value.nickname || '');
+    return getInitials(userName.value?.nickname || '');
 });
 
 // Methods
@@ -63,27 +63,9 @@ const logout = () => {
     localStorage.clear()
     authStore.initialize()
     router.push('/login')
-
-    updateUserData();
-};
-const updateUserData = async () => {
-    if (!isAuthenticated) userData.value = {};
-    else {
-        try {
-            const response = await userStore.getProfile();
-            if (response.success) {
-                console.log('Данные профиля получены',response.data);
-                userData.value = response.data;
-            } else {
-                console.log('Error fetching profile:', response.error);
-            }
-        } catch (error) {
-            console.log('Error fetching profile:', error);
-        }
-    }
 };
 
 onMounted(async () => {
-    updateUserData();
+    userName.value = (await userStore.getProfile()).data.nickname;
 });
 </script>

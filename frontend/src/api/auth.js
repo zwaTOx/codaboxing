@@ -7,11 +7,11 @@ console.log(API_BASE_URL, 'new comments');
 console.log(API_BASE_URL, 'new comments');
 
 const api = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: '/api',
     headers: {
         'Content-Type': 'application/json'
     },
-    withCredentials: true
+    withCredentials: true   
 })
 
 export const authApi = {

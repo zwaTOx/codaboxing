@@ -17,6 +17,7 @@ export const useAuthStore = defineStore('auth', () => {
             // addCookie('refreshToken', response.data.refreshToken);
             saveToCache('is_auth', true);
             isAuth.value = true;
+
             return { success: true, data: response.data }
         } catch (error) {
             // if (error.response.status === 401) {
