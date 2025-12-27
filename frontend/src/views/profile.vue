@@ -21,6 +21,35 @@
                         </div>
                     </div>
                 </div>
+                <div class="profile__descr--info--edit" @click="openModal('nick')" style="display: flex; gap: 12px">
+                    <div class="profile__descr--info--edit--btn" style="
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+                    padding: 5px 10px;
+                    border-radius: 24px;
+                    border: 2px solid #fff;
+                    width: fit-content;
+                    cursor: pointer;
+                    ">
+                        <img src="../assets/icons/edit.svg" alt="">
+                        <div class="profile__descr--info--edit--text">Изменить личные данные</div>
+                    </div>
+
+                    <div class="profile__descr--info--edit--btn" @click="openModal()" style="
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+                    padding: 5px 10px;
+                    border-radius: 24px;
+                    border: 2px solid #fff;
+                    width: fit-content;
+                    cursor: pointer;
+                    ">
+                        <img src="../assets/icons/edit.svg" alt="">
+                        <div class="profile__descr--info--edit--text">Изменить пароль</div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="profile__stats profile_comp">
@@ -133,16 +162,21 @@
             <h1>История</h1>
             <history-component v-for="game in history" :key="game.id" :data="game" />
         </div>
+        <profileEdit v-if="nicknameStatus" @update="updateData" @close="closeModal" />
+        <changePassword v-show="passwordStatus" @close="closeModal" />
     </div>
+    
 </template>
 
 <script>
 import historyComponent from '@/components/historyComponent.vue';
+import profileEdit from '@/components/profileEdit.vue';
+import changePassword from '@/components/changePassword.vue';
 import { getInitials } from '@/composables/getInitials';
 import { useUserStore } from '@/stores/user'
 
 export default {
-    components: { historyComponent },
+    components: { profileEdit, changePassword, historyComponent },
     data() {
         return {
             // games: 4,
@@ -162,7 +196,7 @@ export default {
                 next_lvl: 150,
             },
             profile: { },
-            history: [
+            history1: [
                 {
                     id: 1,
                     type: 'win',
@@ -187,16 +221,37 @@ export default {
                     rating: 252,
                     progress: '-9',
                 }
-            ]
+            ],
+            history: [],
+
+            nicknameStatus: false,
+            passwordStatus: false
         }
     },
     methods: {
+        openModal(value) {
+            if (value === 'nick') {
+                this.nicknameStatus = true
+            } else {
+                this.passwordStatus = true
+            }
+        },
+        closeModal() {
+            this.nicknameStatus = false,
+            this.passwordStatus = false
+        },
+        async updateData() {
+            await this.getProfile()
+            this.closeModal()
+        },
         async getProfile() {
             try {
                 const response = await useUserStore().getProfile()
                 if (response.success) {
                     console.log('Данные профиля получены',response.data)
                     this.profile = response.data;
+                    this.profile.initials = getInitials(this.profile.nickname)
+                    await this.getHistory();
                 } else {
                     console.log('Error fetching profile:', response.error)
                 }
@@ -204,12 +259,25 @@ export default {
                 console.log('Error fetching profile:', error)
             }
         },
+        async getHistory() {
+            try {
+                const response = await useUserStore().getHistory()
+                if (response.success) {
+                    console.log('История получена',response.data)
+                    this.history = response.data.reverse();
+                } else {
+                    console.log('Error fetching history:', response.error)
+                }
+            } catch (error) {
+                console.log('Error fetching history:', error)
+            }
+        }
     },
     async mounted() {
         await this.getProfile();
         this.profile.initials = getInitials(this.profile.nickname)
         for (let i = 0; i < this.history.length; i++) {
-            this.history[i].opponent_initials = getInitials(this.history[i].opponent)
+            this.history[i].opponent_initials = getInitials(this.history[i].opponent.nickname)
         }
         console.log(this.history)
     }

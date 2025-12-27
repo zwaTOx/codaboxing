@@ -1,19 +1,19 @@
 <template>
-    <div class="historyCard" :class="data.type === 'win' ? 'win' : 'lose' ">
+    <div class="historyCard" :class="data.resultType === 'WIN' ? 'win' : 'lose' ">
         <div class="historyCard__info">
-            <div class="historyCard__info--type">{{ data.type === 'win' ? 'Победа' : 'Поражение' }}</div>
+            <div class="historyCard__info--type">{{ data.resultType === 'WIN' ? 'Победа' : 'Поражение' }}</div>
             <div class="historyCard__info--opponent">
-                <div class="opponent__icon">
+                <div class="opponent__icon"> 
                     {{ data.opponent_initials }}
                 </div>
                 <div class="opponent__info">
-                    <div class="opponent__info--name">{{ data.opponent }}</div>
-                    <div class="opponent__info--rating">{{ `${data.opponent_rank} (${data.rating})` }}</div>
+                    <div class="opponent__info--name">{{ data.opponent.nickname }}</div>
+                    <div class="opponent__info--rating">{{ data.opponent.rating }}</div>
                 </div>
             </div>
         </div>
         <div class="historyCard__rating">
-            {{ data.progress }}
+            {{ data.resultType === 'WIN' ? '+' : '-' }}{{ data.gainedRating }}
         </div>
     </div>
 </template>

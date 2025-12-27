@@ -100,7 +100,7 @@ public class ProblemService{
             }
         } 
         else {
-            duelActionService.playAttemptAction(user, duelId, problemId);
+            duelActionService.playAttemptAction(user, duel, problemId);
         }
 
         SubmitSummary summary = SubmitSummary.builder()

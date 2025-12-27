@@ -27,5 +27,10 @@ api.interceptors.request.use(
 
 
 export const userApi = {
-    profileInfo: () => api.get('/v1/users/me')
+    profileInfo: () => api.get('/v1/users/me'),
+    
+    changeUsername: (newData) => api.patch('/v1/users/me', newData),
+    changePassword: (passwordData) => api.put('/v1/users/me/password', passwordData),
+
+    getHistory: () => api.get('/v1/users/me/duels'),
 }

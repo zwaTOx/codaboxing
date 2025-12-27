@@ -6,6 +6,7 @@
 @import './pages/game.css';
 
 /* Components */
+@import './components/modal.css';
 @import './components/header.css';
 @import './components/historyCard.css';
 @import './components/borderButton.css';
